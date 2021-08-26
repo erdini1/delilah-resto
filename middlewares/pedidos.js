@@ -1,23 +1,28 @@
 let productosModels = require('../models/productos')
 let pedidos = require('../models/pedidos')
+//const { json } = require('express')
 
 function validar_datos_pedidos(req, res, next) {
     let pedido = req.body
-    //if()
-                //SEGUIR MIRANDO ESTO, LA VALIDACION DEL BODY
-                
-    pedido.detalle.forEach(productoDetalle => {
-        let productoBuscado = productosModels.productos.find(elemento => elemento.id == productoDetalle.id)
-        if(productoBuscado){
-            totalPrecios = totalPrecios + parseInt(productoBuscado.precio)*parseInt(pedido.detalle)
+    if(pedido.detalle != undefined){
+        let contador = 0            
+        pedido.detalle.forEach(productoDetalle => {
+            if(productoDetalle.idProducto != undefined && productoDetalle.cantidad != undefined){
+                let productoBuscado = productosModels.find(elemento => elemento.id == productoDetalle.idProducto)
+                if(productoBuscado){
+                    contador++
+                }
+            }
+        })
+        if(contador === pedido.detalle.length){
+            next()
+        } else{
+            res.status(400).json({"mensaje":"Tiene que ingresar un id del producto existente e indicar la cantidad"})
         }
-    })
-    let valores = Object.values(pedido.detalle[0])
-    let valoresExistentes = valores.find(elemento => elemento === undefined)
-    if(valoresExistentes){
-        res.status(400).json({"mensaje":"Tiene que ingresar el id del producto y la cantidad"})
+    } else{
+        res.status(400).json({"mensaje":"No puede dejar datos en blanco"})
     }
-
+    
 }
 
 function modificar_estado(req, res, next){
@@ -30,7 +35,7 @@ function modificar_estado(req, res, next){
 }
 
 function validar_id_pedido(req, res, next){
-    const idParams = parseInt(req.params.id_pedido)
+    const idParams = parseInt(req.params.idPedido)
     const pedido = pedidos.find(elemento => elemento.idPedido === idParams)
     if(!Number.isInteger(idParams) || idParams == undefined){
         res.status(400).json({"mensaje" : "El id del pedido debe ser un numero entero"})
@@ -45,8 +50,35 @@ function validar_id_pedido(req, res, next){
     }
 }
 
+function modificar_pedido(req, res, next){
+    const idParams = parseInt(req.params.idPedido)
+    const pedido = pedidos.find(elemento => elemento.idPedido === idParams)
+    const filtroPedidos = pedidos.filter(elemento => elemento.idUsuario == req.headers.id_usuario)
+    if(!pedido){
+        res.status(400).json({"mensaje":"El pedido no existe"})
+    } else{
+        let bandera = false
+        for(let i = 0; i<filtroPedidos.length; i++){
+            if(pedido == filtroPedidos[i] ){
+                bandera = true
+                if(pedido.estado == "pendiente"){
+                    next()
+                } else{
+                    res.status(400).json({"mensaje":"El pedido ya no se puede modificar"})
+                    return
+                }
+            }
+        }
+        if(bandera == false){
+            res.status(400).json({"mensaje":"No puede modificar un pedido que no sea suyo"})
+            return
+        }
+    }
+}
+
 module.exports = {
     validar_datos_pedidos,
     validar_id_pedido,
-    modificar_estado
+    modificar_estado,
+    modificar_pedido
 }

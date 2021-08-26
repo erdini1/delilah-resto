@@ -16,6 +16,5 @@ let productos = [
     }
 ]
 
-let formasDePago = ["efectivo", "debito"]
 
-module.exports = {productos, formasDePago}
+module.exports = productos

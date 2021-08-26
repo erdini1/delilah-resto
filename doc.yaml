@@ -1,0 +1,191 @@
+openapi: 3.0.0
+info:
+  version: '1'
+  title: Delilah Resto
+  description: Api para  la gestion de pedidos
+
+servers:
+  - description: Mi servidor local
+    url: http://localhost:3000
+tags:
+  - name: usuarios
+    description: Gestion de usuarios
+  - name: productos
+    description: Gestion de productos
+  - name: pedidos 
+    description: Gestion de pedidos
+  - name: metodos de pago 
+    description: Gestion de metodos de pago
+
+paths:
+  /usuarios/registro:
+    post:
+      tags:
+        - usuarios
+      summary: Registra un nuevo usuario
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/BodyUsuarioPost'
+        required: true
+      responses:
+        201:
+          description: Usuario creado con exito
+        400:
+          $ref: '#/components/responses/validacionAdmin'
+
+
+
+  /productos:
+  #   get:
+  #     tags:
+  #       - productos
+  #     summary: Muestra el listado de prodcutos
+  #     parameters:
+  #       - 
+  
+
+    post:
+      tags:
+        - productos
+      summary: Agrega un nuevo prodcuto
+      parameters:
+        - $ref: '#/components/parameters/idUsuario'
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/BodyProductoPost'
+        required: true
+      responses:
+        201:
+          description:  Producto creado
+          content:
+            application/json:
+              schema:
+                type: object
+                 
+
+        400:
+          $ref: '#/components/responses/validacionAdmin'
+
+
+
+components:
+  responses:
+    validacionAdmin: 
+      description: Solo el admin puede realizar esa accion
+  parameters:
+    idUsuario:
+      name: id_usuario
+      in: header
+      description: id del usuario
+      required: true
+      schema:
+          type: integer
+  schemas:
+    BodyUsuarioPost:
+      type: object
+      properties:
+        usuario:
+          type: string
+          description: nombre de usuario
+        nombre y apellido:
+          type: string
+          description: nombre y apellido del usuario
+        email:
+          type: string
+          description: email del usuario
+        telefono:
+          type: integer
+          format: int 32
+          description: telefono del usuario
+        direccionEnvio:
+          type: string
+          description: direccion del usuario
+        contrasenia:
+          type: string
+          description: contraseña del usuario
+        confContrasenia:
+          type: string
+          description: confirmacion de contraseña del usuario
+
+    BodyProductoPost:
+      type: object
+      properties:
+        nombre:
+          type: string
+          description: nombre del producto
+        precio:
+          type: integer
+          format: int 32
+          description: precio del producto
+        
+
+
+    
+  
+
+
+# paths:   
+#   /usuarios/registro:
+#     post:
+#       tags:
+#         - Usuario
+#       summary: Nuevo usuario
+#       operationId: crearUsuario
+#       description: Creacion de usuario 
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/usuario'
+#       responses:
+#               '201':
+#                 description: Usuario creado con exito
+#                 content:
+#                   application/json:
+#                     schema:
+#                       type: object
+#               '400':
+#                 description: El email ya se encuentra registrado
+#                 content:
+#                   application/json:
+#                     schema:
+#                       type: object
+# components:
+#   schemas:
+#     usuario:  
+#       type: object
+#       properties:
+#         usuario:
+#           type: string
+#         nombre y apellido:
+#           type: string
+#         email:
+#           type: string
+#         telefono:
+#           type: integer
+#           format: int 32
+#         direccionEnvio:
+#           type: string
+#         contrasenia:
+#           type: string
+#         confContrasenia:
+#           type: string
+
+#       # parameters:
+#       #   - in: path
+#       #     name: prueba
+#       #     description: usuario nuevo
+#       #     required: true
+#       #     schema:
+#       #         # $ref: '#/components/schemas/Usuario'
+
+
+
+
+      
+
+

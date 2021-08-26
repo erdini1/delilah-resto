@@ -37,26 +37,26 @@ function validar_datos_registro(req, res, next){
 }
 
 function validar_datos_login(req, res, next){
-    if(req.body.email != undefined && req.body.contrasenia != undefined){
-        const usuarioEmail = usuarios.find(elemento => elemento.email === req.body.email)
+    if(req.body.usuario_email != undefined && req.body.contrasenia != undefined) {
+
+        const usuarioUsuario = usuarios.find(elemento => elemento.usuario === req.body.usuario_email || elemento.email === req.body.usuario_email)
         const usuarioContrasenia = usuarios.find(elemento => elemento.contrasenia === req.body.contrasenia)
-        indexUsuarioEmail = usuarios.indexOf(usuarioEmail)
+        indexUsuariousuario = usuarios.indexOf(usuarioUsuario)
         indexUsuarioContrasenia = usuarios.indexOf(usuarioContrasenia)
 
-
-        if(!usuarioEmail){
-            res.status(400).json({"mensaje":"No hay ninguna cuenta con ese email"})
+        if(!usuarioUsuario ){
+            res.status(400).json({"mensaje":"No hay ninguna cuenta con esos datos"})
             return
         } else{
-            if(indexUsuarioEmail != indexUsuarioContrasenia){
+            if(indexUsuariousuario != indexUsuarioContrasenia){
                 res.status(400).json({"mensaje":"La contraseña no coincide con el usuario"})
                 return
             }
         } 
-        req.emailUsuario = usuarioEmail
         next()
+    } else{
+        res.status(400).json({"mensaje": "No puede dejar ningun campo vacio"})
     }
-    
 }
 
 module.exports = {

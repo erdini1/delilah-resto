@@ -12,8 +12,6 @@ router.post('/registro', middles.validar_datos_usuarios, middles.validar_datos_r
 
 //Inicio de sesion
 router.post('/login', middles.validar_datos_login, (req, res) => {
-    const emailUsuario = req.body.email
-    const usuario = usuarios.find(elemento => elemento.email === emailUsuario)          //validar que la contraseña corresponda al usuario
     res.status(200).json({"mensaje":"Ingreso correctamente"})
 })
 

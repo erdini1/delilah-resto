@@ -31,7 +31,7 @@ function validar_admin (req, res, next){
 
 function validar_datos_body(req, res, next){
     const producto = req.body
-    let productoRepetido = productosModels.productos.find(elemento => elemento.nombre == producto.nombre)
+    let productoRepetido = productosModels.find(elemento => elemento.nombre == producto.nombre)
     if(producto.nombre != undefined && producto.precio != undefined){
         if(productoRepetido){
             res.status(400).json({"mensaje":"No puede agregar productos repetidos"})
@@ -45,7 +45,7 @@ function validar_datos_body(req, res, next){
 
 function validar_id_producto(req, res, next){
     const idParams = parseInt(req.params.idProducto)
-    const producto = productosModels.productos.find(elemento => elemento.id === idParams)
+    const producto = productosModels.find(elemento => elemento.id === idParams)
     if(!Number.isInteger(idParams) || idParams == undefined){
         res.status(422).json({"mensaje" : "El id del producto debe ser un numero entero"})
 
