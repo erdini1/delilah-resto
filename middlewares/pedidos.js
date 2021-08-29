@@ -1,6 +1,6 @@
 let productosModels = require('../models/productos')
 let pedidos = require('../models/pedidos')
-//const { json } = require('express')
+const Estados = require('../constantes/estados')
 
 function validar_datos_pedidos(req, res, next) {
     let pedido = req.body
@@ -27,8 +27,11 @@ function validar_datos_pedidos(req, res, next) {
 
 function modificar_estado(req, res, next){
     let estado = req.body.estado
-    if(estado == undefined){
-        res.status(400).json({"mensaje":"Tiene que ingresar un estado"})
+    if(!Estados[estado]){
+        res.status(400).json({
+            "mensaje":"Tiene que ingresar un estado valido",
+            estados : Estados
+    })
     } else{
         next()
     }

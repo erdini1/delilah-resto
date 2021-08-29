@@ -6,6 +6,7 @@ const middlesPedid = require('../middlewares/pedidos')
 const middlesPago = require('../middlewares/metodosDePago')
 const pedidos = require('../models/pedidos')
 const productosModels = require('../models/productos')
+const Estados = require('../constantes/estados')
 
 //El admin puede ver todos los pedidos, El usuario puede ver sus pedidos
 router.get('/', middlesProd.validar_sesion_iniciada, (req, res) => {
@@ -33,7 +34,7 @@ router.post('/', middlesProd.validar_sesion_iniciada, middlesPedid.validar_datos
         }
     })
     pedido.total = totalPrecios
-    pedido.estado = "pendiente"
+    pedido.estado = Estados.pendiente
     pedido.direccion = pedido.direccion
     if(pedido.direccion == undefined){
         pedido.direccion = usuario.direccionEnvio
@@ -67,7 +68,7 @@ router.put('/:idPedido', middlesProd.validar_sesion_iniciada, middlesPedid.valid
     pedido.total = totalPrecios
     pedido.direccion = datosAModificar.direccion
     pedido.hora = "12:40"
-    res.status(200).json({"mensaje":"Producto actualizado"})
+    res.status(200).json({"mensaje":"Pedido actualizado"})
 })
 
 //El admin puede modificar el estado del pedido solo si ya esta confirmado
@@ -75,7 +76,7 @@ router.put('/:idPedido/estado', middlesProd.validar_sesion_iniciada, middlesProd
     const estado = req.body.estado
     let pedido = req.pedido
 
-    if(pedido.estado === "pendiente"){
+    if(pedido.estado === Estados.pendiente){
         res.status(400).json({"mensaje":"No puede modificar un pedido que no esta cerrado"})
     } else{
         pedido.estado = estado
@@ -89,7 +90,7 @@ router.put('/:idPedido/confirmacion', middlesProd.validar_sesion_iniciada, middl
     const idParams = req.params.idPedido
     let pedido = pedidos.find(elemento => elemento.idPedido == idParams)
     const indexPedido = pedidos.indexOf(pedido)
-    pedidos[indexPedido].estado = "confirmado"
+    pedidos[indexPedido].estado = Estados.confirmado
     res.status(200).json({"mensaje":"Estado modificado a confirmado, ya no lo puede modificar"})
 })
 
