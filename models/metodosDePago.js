@@ -1,6 +1,6 @@
 const metodosPago = [
     {
-        "metodo" : "tarjeta",
+        "metodo" : "credito",
         "id" : 1,
     },
     {

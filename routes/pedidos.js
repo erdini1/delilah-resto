@@ -20,6 +20,7 @@ router.get('/', middlesProd.validar_sesion_iniciada, (req, res) => {
     }
 })
 
+//El usuario puede realizar un pedido
 router.post('/', middlesProd.validar_sesion_iniciada, middlesPedid.validar_datos_pedidos, middlesPago.validar_metodo_pago, (req, res) => {
     
     let pedido = req.body

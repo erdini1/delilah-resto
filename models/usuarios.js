@@ -1,6 +1,6 @@
 const usuariosRegistrados = [
     {
-        "usuario":"Dylan123",
+        "usuario":"Dylan",
         "nombre y apellido": "Dylan erdini",
         "email": "admin@gmail.com",
         "telefono": 123456,
