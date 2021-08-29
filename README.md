@@ -1,18 +1,18 @@
 # Delilah Resto 
 
-API para gestion de pedidos.
+>API para gestion de pedidos.
 
 Proyecto del primer Sprint del curso de Desarrollo Web Back End de Acamica
 
 ## Tecnologias y dependencias utilizadas:
 
-- Node.js
+- Node.js - v14.17.3
 
-- Cors
+- Cors - v2.8.5"
 
-- Express
+- Express - v4.17.1
 
-- Nodemon
+- Nodemon - v2.0.12
 
 - Postman para el manejo de endpoints
 
@@ -33,13 +33,13 @@ En este [link](https://gitlab.com/erdini.dylan/delilah-resto) se encuentra el re
 
 Utilizando lo siguiente en la terminal:
 
-``` 
+```bash 
 git clone https://gitlab.com/erdini.dylan/delilah-resto.git
 
 ```
 ## 2) Instalar dependencias
 
-```
+```bash
 npm i
 ```
 
@@ -47,6 +47,6 @@ npm i
 
 Para poder iniciar el servidor debe ubicarse en la raiz del repositorio y ejecutar el siguiente comando desde node:
 
-```
-node index
+```bash
+node index.js
 ```
