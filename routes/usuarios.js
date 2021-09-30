@@ -7,7 +7,6 @@ const middles = require('../middlewares/usuarios')
 router.post('/registro', middles.validar_datos_usuarios, middles.validar_datos_registro, (req, res) => {
     const nuevoUsuario = req.body
     usuarios.push(nuevoUsuario)
-    console.log("Probando")
     res.status(201).json({"mensaje":`Usuario Creado con exito, su id es ${nuevoUsuario.id}`})
 })
 
