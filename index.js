@@ -1,10 +1,15 @@
 const express = require('express');
 const app = express();
 const cors = require('cors')
+const {sequelize} = require('./src/connection/sequelize')
+const modelsdb = require('./modelsdb/users')
 
 app.use(cors())
-
 app.use(express.json())
+
+// ;(async() => {
+//     await sequelize.sync()
+// })();
 
 const usuarios = require('./routes/usuarios')
 app.use('/usuarios', usuarios)
