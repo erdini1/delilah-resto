@@ -3,9 +3,10 @@ const app = express();
 const cors = require('cors')
 const {sequelize} = require('./src/connection/sequelize')
 const modelsdb = require('./modelsdb/users')
-
+const helmet = require('helmet')
 app.use(cors())
 app.use(express.json())
+app.use(helmet())
 
 // ;(async() => {
 //     await sequelize.sync()

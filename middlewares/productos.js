@@ -1,9 +1,28 @@
 const productosModels = require('../models/productos')
 let usuarios = require('../models/usuarios')
-
+const secretkey = "pruebaejercicio"
+const jwt = require('jsonwebtoken')
 
 function validar_sesion_iniciada(req, res, next){
-    const idHeaders = parseInt(req.headers.id_usuario)
+    /* onst stringtoken = req.headers.authorization
+    const token = stringtoken.split(" ")[1]
+    const decodificado = jwt.verify(token, secretkey)
+    console.log(decodificado) */
+    console.log("middleware")
+    try {
+        const stringtoken = req.headers.authorization
+        const token = stringtoken.split(" ")[1]
+        console.log(token)
+        const decodificado = jwt.verify(token, secretkey)           //MIRAR ESTO Y LIMPIAR LOS COMENTARIOS Y LOS CONSOLE.LOG
+        console.log(decodificado)
+        next()
+
+    } catch (error) {
+        res.status(401).json(error)
+    }
+
+
+    /* const idHeaders = parseInt(req.headers.id_usuario)
     const usuario = usuarios.find(elemento => elemento.id === idHeaders)
     if(!Number.isInteger(idHeaders) || idHeaders == undefined){
         res.status(400).json({"mensaje" : "El Id del usuario debe ser un numero entero"})
@@ -14,7 +33,7 @@ function validar_sesion_iniciada(req, res, next){
         } else{
             next()
         }
-    }
+    } */
 }
 
 function validar_admin (req, res, next){

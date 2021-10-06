@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 let usuarios = require('../models/usuarios')
 const middles = require('../middlewares/usuarios')
+const jwk = require('jsonwebtoken')
 
 //Registro
 router.post('/registro', middles.validar_datos_usuarios, middles.validar_datos_registro, (req, res) => {
@@ -12,7 +13,11 @@ router.post('/registro', middles.validar_datos_usuarios, middles.validar_datos_r
 
 //Inicio de sesion
 router.post('/login', middles.validar_datos_login, (req, res) => {
-    res.status(200).json({"mensaje":"Ingreso correctamente"})
+    const token = req.token
+    res.status(200).json({                  //TERMINAR DE VER ESTO DE JWT
+        msg: "Ingreso correctamente",
+        token
+    })
 })
 
 module.exports = router

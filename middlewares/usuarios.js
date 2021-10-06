@@ -1,4 +1,6 @@
 let usuarios = require('../models/usuarios')
+const jwt = require('jsonwebtoken')
+const secretkey = "pruebaejercicio"
 
 function validar_datos_usuarios(req, res, next){
     const usuario = req.body
@@ -53,6 +55,8 @@ function validar_datos_login(req, res, next){
                 return
             }
         } 
+        const stringtoken = jwt.sign({usuario: usuarioUsuario}, secretkey)
+        req.token = stringtoken             //TERMIANR DE VER ESTO, ES DECIR PASARLO A LA RUTA, NO TIENE QUE ESTAR EN EL MIDDLE EL JWT
         next()
     } else{
         res.status(400).json({"mensaje": "No puede dejar ningun campo vacio"})
