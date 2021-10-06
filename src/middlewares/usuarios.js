@@ -1,6 +1,6 @@
 let usuarios = require('../models/usuarios')
 const jwt = require('jsonwebtoken')
-const secretkey = "pruebaejercicio"
+const {config} = require('../config')
 
 function validar_datos_usuarios(req, res, next){
     const usuario = req.body
@@ -55,7 +55,7 @@ function validar_datos_login(req, res, next){
                 return
             }
         } 
-        /* const stringtoken = jwt.sign({usuario: usuarioUsuario}, secretkey)
+        /* const stringtoken = jwt.sign({usuario: usuarioUsuario}, config.server.signature)
         req.token = stringtoken             //TERMIANR DE VER ESTO, ES DECIR PASARLO A LA RUTA, NO TIENE QUE ESTAR EN EL MIDDLE EL JWT */
         next()
     } else{
