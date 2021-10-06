@@ -8,7 +8,9 @@ function validar_sesion_iniciada(req, res, next){
     const token = stringtoken.split(" ")[1]
     const decodificado = jwt.verify(token, secretkey)
     console.log(decodificado) */
-    console.log("middleware")
+
+
+    /* console.log("middleware")
     try {
         const stringtoken = req.headers.authorization
         const token = stringtoken.split(" ")[1]
@@ -19,10 +21,10 @@ function validar_sesion_iniciada(req, res, next){
 
     } catch (error) {
         res.status(401).json(error)
-    }
+    } */
 
 
-    /* const idHeaders = parseInt(req.headers.id_usuario)
+    const idHeaders = parseInt(req.headers.id_usuario)
     const usuario = usuarios.find(elemento => elemento.id === idHeaders)
     if(!Number.isInteger(idHeaders) || idHeaders == undefined){
         res.status(400).json({"mensaje" : "El Id del usuario debe ser un numero entero"})
@@ -33,7 +35,7 @@ function validar_sesion_iniciada(req, res, next){
         } else{
             next()
         }
-    } */
+    }
 }
 
 function validar_admin (req, res, next){

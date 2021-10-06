@@ -15,8 +15,8 @@ router.post('/registro', middles.validar_datos_usuarios, middles.validar_datos_r
 router.post('/login', middles.validar_datos_login, (req, res) => {
     const token = req.token
     res.status(200).json({                  //TERMINAR DE VER ESTO DE JWT
-        msg: "Ingreso correctamente",
-        token
+        msg: "Ingreso correctamente"/* ,
+        token */
     })
 })
 

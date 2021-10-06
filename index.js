@@ -12,16 +12,16 @@ app.use(helmet())
 //     await sequelize.sync()
 // })();
 
-const usuarios = require('./routes/usuarios')
+const usuarios = require('./src/routes/usuarios')
 app.use('/usuarios', usuarios)
 
-const productos = require('./routes/productos')
+const productos = require('./src/routes/productos')
 app.use('/productos', productos)
 
-const pedidos = require('./routes/pedidos')
+const pedidos = require('./src/routes/pedidos')
 app.use('/pedidos', pedidos)
 
-const metodosDePago = require('./routes/metodosDePago')
+const metodosDePago = require('./src/routes/metodosDePago')
 app.use('/pagos', metodosDePago)
 
 app.listen(3000, () =>  console.log("Servidor corriendo en el puerto 3000!"))
