@@ -13,16 +13,16 @@ app.use(helmet())
 //     await sequelize.sync()
 // })();
 
-const usuarios = require('./src/routes/usuarios')
-app.use('/usuarios', usuarios)
+const users = require('./src/routes/users')
+app.use('/users', users)
 
-const productos = require('./src/routes/productos')
-app.use('/productos', productos)
+const products = require('./src/routes/products')
+app.use('/products', products)
 
-const pedidos = require('./src/routes/pedidos')
-app.use('/pedidos', pedidos)
+const orders = require('./src/routes/orders')
+app.use('/orders', orders)
 
-const metodosDePago = require('./src/routes/metodosDePago')
-app.use('/pagos', metodosDePago)
+const paymentMethods = require('./src/routes/paymentMethods')
+app.use('/payments', paymentMethods)
 
 app.listen(config.server.port, () =>  console.log(`Servidor corriendo en el puerto ${config.server.port}!`))
