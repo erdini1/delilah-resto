@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors')
 const {sequelize} = require('./src/connection/sequelize')
 const {config} = require('./src/config')
-const modelsdb = require('./modelsdb/users')
 const helmet = require('helmet')
 const app = express();
 app.use(cors())
