@@ -1,9 +1,13 @@
 const productsModels = require('../models/products')
-let users = require('../models/users')
+//let users = require('../models/users')
 const jwt = require('jsonwebtoken')
 const { config } = require('../config')
+const { checkIdProduct, checkName } = require('../repositories/products')
+const { User } = require('../modelsdb/users')
+const { checkIdUser } = require('../repositories/users')
+const products = require('../models/products')
 
-function validate_started_session(req, res, next){
+async function validate_started_session(req, res, next){
     /* onst stringtoken = req.headers.authorization
     const token = stringtoken.split(" ")[1]
     const decodificado = jwt.verify(token, ${config.server.signature})
@@ -23,35 +27,74 @@ function validate_started_session(req, res, next){
         res.status(401).json(error)
     } */
 
-
     const idHeaders = parseInt(req.headers.id_user)
-    const user = users.find(element => element.id === idHeaders)
+
     if(!Number.isInteger(idHeaders) || idHeaders == undefined){
+        
         res.status(400).json({"mensaje" : "El Id del usuario debe ser un numero entero"})
 
     }else{
+
+        const user = await checkIdUser(idHeaders)
+
         if(!user){
+        
             res.status(401).json({"mensaje":"El id no pertenece a un usuario"})
+        
         } else{
+
             next()
+        
         }
     }
 }
 
-function validate_admin (req, res, next){
-    const idHeaders = parseInt(req.headers.id_user)
-    const user = users.find(element => element.id === idHeaders)
+async function validate_admin (req, res, next){
 
-    if(user.rol === "admin"){
-        next()
+    const idHeaders = parseInt(req.headers.id_user)
+    const user = await checkIdUser(idHeaders)
+    if(user){
+
+        if(user.admin === true){
+            
+            next()
+        
+        } else{
+            
+            res.status(403).json({"mensaje":"Solo el administrador puede realizar esa accion"})
+        
+        }
     } else{
-        res.status(403).json({"mensaje":"Solo el administrador puede realizar esa accion"})
+        res.status(400)
     }
 
 }
 
-function validate_data_body(req, res, next){
-    const product = req.body
+async function validate_data_body(req, res, next){
+    
+    const { name, price} = req.body
+    if(name != undefined && price != undefined){
+        
+        const product = await checkName(name)
+        
+        if(!product){
+            
+            next()
+        
+        } else{
+        
+            res.status(400).json({msg: "No puede haber productos repetidos"})
+        
+        }
+
+    } else{
+        
+        res.status(400).json({msg: "Tiene que ingresar un nombre y un precio del producto"})
+    
+    }
+    
+    
+    /*  const product = req.body
     let repeatedProduct = productsModels.find(element => element.name == product.name)
     if(product.name != undefined && product.price != undefined){
         if(repeatedProduct){
@@ -61,22 +104,28 @@ function validate_data_body(req, res, next){
         }
     } else{
         res.status(400).json({"mensaje":"Tiene que ingresar el nombre y el precio del producto"})
-    }
+    } */
 }
 
-function validate_id_product(req, res, next){
+async function validate_id_product(req, res, next){
     const idParams = parseInt(req.params.idProduct)
-    const product = productsModels.find(element => element.id === idParams)
-    if(!Number.isInteger(idParams) || idParams == undefined){
-        res.status(422).json({"mensaje" : "El id del producto debe ser un numero entero"})
+    const product = await checkIdProduct(idParams)
+    if(Number.isInteger(idParams) || idParams != undefined){
+
+        if(product){
+
+            next()
+
+        } else{
+
+            res.status(400).json({"mensaje":"El id indicado no pertenece a un producto"})
+
+        }
 
     }else{
-        if(!product){
-            res.status(400).json({"mensaje":"El id indicado no pertenece a un producto"})
-        } else{
-            req.product = product
-            next()
-        }
+
+        res.status(422).json({"mensaje" : "El id del producto debe ser un numero entero"})
+
     }
 }
 

@@ -7,5 +7,6 @@ exports.sequelize = new Sequelize(config.db.databse, config.db.user, config.db.p
     dialect: "mariadb",              //LUEGO AGREGAR VARIABLES DE ENTORNO DOTENV
     define: {
         timestamps: false
-    }
+    },
+    logging: false
 })

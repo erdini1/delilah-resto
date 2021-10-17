@@ -1,4 +1,4 @@
-const {sequelize} = require('../src/connection/sequelize')
+const {sequelize} = require('../connection/sequelize')
 const {Model, DataTypes} = require('sequelize')
 
 class PaymentMethod extends Model { }

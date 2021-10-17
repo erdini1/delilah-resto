@@ -1,5 +1,5 @@
 const { Model, DataTypes, Op } = require('sequelize')
-const { sequelize } = require('../src/connection/sequelize')
+const { sequelize } = require('../connection/sequelize')
 const {Order, OrderDetail } = require('./orders')
 const {Product} = require('./products')
 const {PaymentMethod} = require('./paymentMethods')
@@ -43,7 +43,7 @@ User.init({
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false
-    },
+    },  //AGREGAR COLUMNA ENABLE
     // timestamps: false
 }, {sequelize, modelName: 'Users'})
 
@@ -53,9 +53,6 @@ Product.hasMany(OrderDetail, {as: "OrderDetails", foreignKey: "product_id"})
 PaymentMethod.hasMany(Order, {as: "Orders", foreignKey: "payment_id"})
 
 module.exports = { 
-    User,
-    Order,
-    Product,
-    PaymentMethod, 
+    User, 
     Op
 }
