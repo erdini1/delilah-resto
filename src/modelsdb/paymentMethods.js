@@ -3,7 +3,7 @@ const {Model, DataTypes} = require('sequelize')
 
 class PaymentMethod extends Model { }
 
-PaymentMethod.init({                                    //en ingles
+PaymentMethod.init({
     method: {
         type: DataTypes.STRING,
         allowNull: false

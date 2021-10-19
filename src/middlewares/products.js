@@ -1,11 +1,11 @@
-const productsModels = require('../models/products')
+// const productsModels = require('../models/products')
 //let users = require('../models/users')
 const jwt = require('jsonwebtoken')
 const { config } = require('../config')
 const { checkIdProduct, checkName } = require('../repositories/products')
-const { User } = require('../modelsdb/users')
+// const { User } = require('../modelsdb/users')
 const { checkIdUser } = require('../repositories/users')
-const products = require('../models/products')
+//const products = require('../models/products')
 
 async function validate_started_session(req, res, next){
     /* onst stringtoken = req.headers.authorization

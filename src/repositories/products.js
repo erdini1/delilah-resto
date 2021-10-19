@@ -1,4 +1,3 @@
-//const products = require('../models/products')
 const {Product} = require('../modelsdb/products')
 
 exports.getAll = async () => {
