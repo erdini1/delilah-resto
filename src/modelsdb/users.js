@@ -47,6 +47,11 @@ User.init({
     // timestamps: false
 }, {sequelize, modelName: 'Users'})
 
+// User.hasMany(Order, {as: "Orders", foreignKey: "user_id"})
+// Order.belongsToMany(Product, {/* as: "OrderDetails" ,  */through: OrderDetail, foreignKey: "order_id"})
+// Product.belongsToMany(Order, {/* as: "OrderDetails" , */through: OrderDetail, foreignKey: "product_id"})
+// PaymentMethod.hasMany(Order, {as: "Orders", foreignKey: "payment_id"})
+
 User.hasMany(Order, {as: "Orders", foreignKey: "user_id"})
 Order.hasMany(OrderDetail, {as: "OrderDetails", foreignKey: "order_id"})
 Product.hasMany(OrderDetail, {as: "OrderDetails", foreignKey: "product_id"})

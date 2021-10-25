@@ -9,7 +9,7 @@ const { orderList, newOrder, modifyOrder, modifyOrderState, orderConfirmation } 
 router.get('/', middlesProducts.validate_started_session, orderList)
 
 //El usuario puede realizar un pedido
-router.post('/', middlesProducts.validate_started_session, middlesOrders.validate_data_orders, middlesPayments.validate_payment_method, newOrder)
+router.post('/', middlesProducts.validate_started_session, middlesOrders.validate_data_orders,  middlesPayments.validate_payment_method,  newOrder)
 
 //El usuario puede modificar su pedido solo mientras el estado sea "pendiente"
 router.put('/:idOrder', middlesProducts.validate_started_session, middlesOrders.validate_id_order, middlesOrders.modify_order, middlesOrders.validate_data_orders, middlesPayments.validate_payment_method, modifyOrder)

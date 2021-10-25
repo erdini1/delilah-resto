@@ -43,6 +43,7 @@ async function validate_started_session(req, res, next){
         
         } else{
 
+            req.user = user
             next()
         
         }

@@ -4,7 +4,7 @@ const { Model, DataTypes } = require('sequelize')
 class Order extends Model { }
 
 Order.init({
-    newAddres: {
+    newAddress: {    //Modificar a newAddress
         type: DataTypes.STRING,                     //en ingles
         allowNull: false,
     },
@@ -14,7 +14,7 @@ Order.init({
     },
     date: {
         type: DataTypes.DATE,
-        defaultValue: true,        //VER ESTO
+        defaultValue: DataTypes.NOW,        //VER ESTO
         allowNull: false
     },
     // timestamps: false,

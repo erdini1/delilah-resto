@@ -1,9 +1,30 @@
 let productsModels = require('../models/products')
 let orders = require('../models/orders')
 const states = require('../constantes/states')
+const { checkIdProduct } = require('../repositories/products')
 
-function validate_data_orders(req, res, next) {
-    let order = req.body
+async function validate_data_orders(req, res, next) {
+    const { payment, details } = req.body
+    if(details != undefined){
+        let counter = 0
+        for await (product of details){
+            if(product.product_id != undefined && product.amount != undefined){
+                const productFind = await checkIdProduct(product.product_id)
+                if(productFind){
+                    counter++
+                }
+            }
+        }
+        if(counter === details.length){
+            next()
+        } else {
+            res.status(400).json({msg: "Tiene que ingresar un id del producto existente e indicar la cantidad de cada uno"})
+        }
+    } else{
+        res.status(400).json({msg: "Tiene que ingresar el detalle de la compra"})
+    }
+    
+    /* let order = req.body
     if(order.detail != undefined){
         let counter = 0            
         order.detail.forEach(productDetail => {
@@ -21,7 +42,7 @@ function validate_data_orders(req, res, next) {
         }
     } else{
         res.status(400).json({"mensaje":"No puede dejar datos en blanco"})
-    }
+    } */
     
 }
 

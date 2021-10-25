@@ -15,17 +15,13 @@ async function validate_id_payment(req, res, next) {
 	}
 }
 
-function validate_payment_method(req, res, next) {
+async function validate_payment_method(req, res, next) {
 	let paymentMethod = req.body.payment;
-	let paymentFind = paymentMethods.find((element) => element.method === paymentMethod);
-	if (!paymentFind) {
-		res.status(400).json({
-			mensaje: `No ingreso un metodo de pago valido`,
-			'Pruebe con ': paymentMethods
-		});
-	} else {
-		//TERMINAR DE VER EL ULTIMO MIDDLE DE PAYMENT Y CONECTAR CON LA BD LOS PEDIDOS
+	let paymentFind = await checkMethodName(paymentMethod)
+	if (paymentFind) {
 		next();
+	} else {
+		res.status(400).json({ mensaje: `No ingreso un metodo de pago valido`});		
 	}
 }
 
