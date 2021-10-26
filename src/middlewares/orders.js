@@ -1,17 +1,18 @@
-let productsModels = require('../models/products')
+//let productsModels = require('../models/products')
 let orders = require('../models/orders')
 const states = require('../constantes/states')
 const { checkIdProduct } = require('../repositories/products')
+const { checkIdOrder } = require('../repositories/orders')
 
 async function validate_data_orders(req, res, next) {
-    const { payment, details } = req.body
+    const { details } = req.body
     if(details != undefined){
         let counter = 0
         for await (product of details){
             if(product.product_id != undefined && product.amount != undefined){
                 const productFind = await checkIdProduct(product.product_id)
                 if(productFind){
-                    counter++
+                    counter++       //hecho
                 }
             }
         }
@@ -23,27 +24,6 @@ async function validate_data_orders(req, res, next) {
     } else{
         res.status(400).json({msg: "Tiene que ingresar el detalle de la compra"})
     }
-    
-    /* let order = req.body
-    if(order.detail != undefined){
-        let counter = 0            
-        order.detail.forEach(productDetail => {
-            if(productDetail.idProduct != undefined && productDetail.amount != undefined){
-                let productFind = productsModels.find(element => element.id == productDetail.idProduct)
-                if(productFind){
-                    counter++
-                }
-            }
-        })
-        if(counter === order.detail.length){
-            next()
-        } else{
-            res.status(400).json({"mensaje":"Tiene que ingresar un id del producto existente e indicar la cantidad"})
-        }
-    } else{
-        res.status(400).json({"mensaje":"No puede dejar datos en blanco"})
-    } */
-    
 }
 
 function modify_states(req, res, next){
@@ -52,15 +32,15 @@ function modify_states(req, res, next){
         res.status(400).json({
             "mensaje":"Tiene que ingresar un estado valido",
             estados : states
-    })
+    })      //hecho
     } else{
         next()
     }
 }
 
-function validate_id_order(req, res, next){
+async function validate_id_order(req, res, next){
     const idParams = parseInt(req.params.idOrder)
-    const order = orders.find(element => element.idOrder === idParams)
+    const order = await checkIdOrder(idParams)
     if(!Number.isInteger(idParams) || idParams == undefined){
         res.status(400).json({"mensaje" : "El id del pedido debe ser un numero entero"})
 
@@ -68,9 +48,8 @@ function validate_id_order(req, res, next){
         if(!order){
             res.status(400).json({"mensaje":"El id indicado no pertenece a un pedido"})
         } else{
-            req.order = order
             next()
-        }
+        }   //hecho
     }
 }
 

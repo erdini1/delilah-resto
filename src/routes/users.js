@@ -1,6 +1,5 @@
 const express = require('express')
 const router = express.Router()
-// let users = require('../models/users')
 const middles = require('../middlewares/users')
 // const jwk = require('jsonwebtoken')
 const { register, login } = require('../controllers/users')

@@ -1,13 +1,8 @@
-const users = require('../models/users')
 const { createUser, checkEmail } = require('../repositories/users')
 
 exports.register = async (req, res) => {
     const body = req.body
     const newUser = await createUser(body)
-    
-    /* const newUser = req.body
-    users.push(newUser) */
-
     res.status(201).json({"mensaje":`Usuario Creado con exito, su id es ${newUser.id}`})
 }
 

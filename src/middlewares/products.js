@@ -93,19 +93,6 @@ async function validate_data_body(req, res, next){
         res.status(400).json({msg: "Tiene que ingresar un nombre y un precio del producto"})
     
     }
-    
-    
-    /*  const product = req.body
-    let repeatedProduct = productsModels.find(element => element.name == product.name)
-    if(product.name != undefined && product.price != undefined){
-        if(repeatedProduct){
-            res.status(400).json({"mensaje":"No puede agregar productos repetidos"})
-        } else{
-           next() 
-        }
-    } else{
-        res.status(400).json({"mensaje":"Tiene que ingresar el nombre y el precio del producto"})
-    } */
 }
 
 async function validate_id_product(req, res, next){

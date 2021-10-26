@@ -17,6 +17,10 @@ Order.init({
         defaultValue: DataTypes.NOW,        //VER ESTO
         allowNull: false
     },
+    state: {
+        type: DataTypes.STRING,
+        allowNull: false
+    }
     // timestamps: false,
 }, {sequelize, modelName: 'Orders'})
 

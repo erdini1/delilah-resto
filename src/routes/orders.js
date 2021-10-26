@@ -12,13 +12,13 @@ router.get('/', middlesProducts.validate_started_session, orderList)
 router.post('/', middlesProducts.validate_started_session, middlesOrders.validate_data_orders,  middlesPayments.validate_payment_method,  newOrder)
 
 //El usuario puede modificar su pedido solo mientras el estado sea "pendiente"
-router.put('/:idOrder', middlesProducts.validate_started_session, middlesOrders.validate_id_order, middlesOrders.modify_order, middlesOrders.validate_data_orders, middlesPayments.validate_payment_method, modifyOrder)
+router.put('/:idOrder', middlesProducts.validate_started_session,  middlesOrders.validate_id_order, /* middlesOrders.modify_order,*/ middlesOrders.validate_data_orders, middlesPayments.validate_payment_method, modifyOrder)
 
 //El admin puede modificar el estado del pedido solo si ya esta confirmado
-router.put('/:idOrder/state', middlesProducts.validate_started_session, middlesProducts.validate_admin,  middlesOrders.validate_id_order, middlesOrders.modify_states, modifyOrderState)
+router.put('/:idOrder/state', middlesProducts.validate_started_session, middlesProducts.validate_admin, middlesOrders.validate_id_order, middlesOrders.modify_states, modifyOrderState)
 
 //El usuario puede confirmar su pedido
-router.put('/:idOrder/confirmation', middlesProducts.validate_started_session, middlesOrders.validate_id_order, middlesOrders.modify_order, orderConfirmation)
+router.put('/:idOrder/confirmation', middlesProducts.validate_started_session, middlesOrders.validate_id_order, /* middlesOrders.modify_order, */ orderConfirmation)
 
 module.exports = router
 
