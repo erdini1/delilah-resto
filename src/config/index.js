@@ -11,5 +11,9 @@ exports.config = {
     server: {
         port: process.env.NODE_PORT,
         signature: process.env.SECRETKEY
+    },
+    redisConfig: {
+        port: process.env.REDIS_PORT,
+        host: process.env.REDIS_HOST
     }
 }

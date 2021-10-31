@@ -1,8 +1,7 @@
-//let productsModels = require('../models/products')
-let orders = require('../models/orders')
 const states = require('../constantes/states')
 const { checkIdProduct } = require('../repositories/products')
 const { checkIdOrder } = require('../repositories/orders')
+const { token } = require('../functions/token')
 
 async function validate_data_orders(req, res, next) {
     const { details } = req.body
@@ -53,29 +52,20 @@ async function validate_id_order(req, res, next){
     }
 }
 
-function modify_order(req, res, next){
+async function modify_order(req, res, next){
+    let stringToken = req.headers.authorization
+    const decoded = token(stringToken)
     const idParams = parseInt(req.params.idOrder)
-    const order = orders.find(element => element.idOrder === idParams)
-    const ordersFilter = orders.filter(element => element.idUser == req.headers.id_user)
-    if(!order){
-        res.status(400).json({"mensaje":"El pedido no existe"})
+    const order = await checkIdOrder(idParams)
+    if(order.state === states.pendiente){
+        if(order.user_id === decoded.id){
+            next()
+        }
+        else{
+            res.status(400).json({"msg":"No puede modificar un pedido que no sea suyo"})
+        }
     } else{
-        let flag = false
-        for(let i = 0; i<ordersFilter.length; i++){
-            if(order == ordersFilter[i] ){
-                flag = true
-                if(order.state == "pendiente"){
-                    next()
-                } else{
-                    res.status(400).json({"mensaje":"El pedido ya no se puede modificar"})
-                    return
-                }
-            }
-        }
-        if(flag == false){
-            res.status(400).json({"mensaje":"No puede modificar un pedido que no sea suyo"})
-            return
-        }
+        res.status(400).json({"msg":"El pedido ya no se puede modificar"})
     }
 }
 

@@ -1,16 +1,21 @@
+const { Address } = require('../modelsdb/address')
 const { User, Op } = require('../modelsdb/users')
+const { createAddress } = require('./address')
 
 exports.createUser = async (user) => {
-    return await User.create({ 
+    const newUser = await User.create({ 
         username: user.username,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
         phone: user.phone,
-        address: user.address,
         password: user.password,
         passwordConf: user.passwordConf
     })
+
+    await createAddress(user.address, newUser.id)
+    
+    return newUser
 }
 
 exports.checkEmail = async (email) => {
@@ -23,4 +28,14 @@ exports.checkEmail = async (email) => {
 
 exports.checkIdUser = async (id) => {
     return await User.findByPk(id)
+}
+
+exports.updateUser = async (idUser, admin) => {
+    return await User.update({
+        admin: admin
+    }, {
+        where: {
+            id: idUser
+        }
+    })
 }

@@ -24,4 +24,7 @@ app.use('/orders', orders)
 const paymentMethods = require('./src/routes/paymentMethods')
 app.use('/payments', paymentMethods)
 
+const address = require('./src/routes/address')
+app.use('/address', address)
+
 app.listen(config.server.port, () =>  console.log(`Servidor corriendo en el puerto ${config.server.port}!`))

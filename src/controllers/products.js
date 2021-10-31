@@ -1,8 +1,19 @@
+const {client} = require('../connection/redis')
 const { getAll, createProduct, modifyProduct, deleteProduct } = require('../repositories/products')
 
 exports.productList = async (req, res) =>{
-    const products = await getAll()
-    res.status(200).json({Products: products})
+    const cache = req.cache
+    if(cache === null){
+        const products = await getAll()
+        client.set("products", JSON.stringify(products), 'EX', 60, (err, reply) => {
+            if(err){
+                res.status(400).json({msg: err})
+            }
+        })
+        res.status(200).json({Products: products})
+    } else {
+        res.status(200).json({Products: cache})
+    }
 }
 
 exports.postProduct = async (req, res) => {
@@ -14,6 +25,7 @@ exports.postProduct = async (req, res) => {
 exports.putProduct = async (req, res) => {
     const idParams = parseInt(req.params.idProduct)
     const body = req.body
+    client.del("products")
     const product = await modifyProduct(idParams, body)
     res.status(200).json({"mensaje": "Producto actualizado"})
 }

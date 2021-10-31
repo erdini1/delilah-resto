@@ -1,4 +1,7 @@
-const { createUser, checkEmail } = require('../repositories/users')
+const { createUser, checkEmail, updateUser } = require('../repositories/users')
+const JWT = require('jsonwebtoken')
+const { config } = require('../config')
+
 
 exports.register = async (req, res) => {
     const body = req.body
@@ -7,14 +10,13 @@ exports.register = async (req, res) => {
 }
 
 exports.login = async (req, res) => {
-    // const token = req.token
     const {email, password} = req.body
     const user = await checkEmail(email)
     if(user){
+        const token = JWT.sign({user}, config.server.signature)
         if(user.password === password){
-            res.status(200).json({                  //TERMINAR DE VER ESTO DE JWT
-                msg: `Ingreso correctamente su id es: ${user.id}`/* ,
-                token */
+            res.status(200).json({
+                msg: `Ingreso correctamente` , token: token
             })
         } else{
             res.status(400).json({msg: "La contraseña no coincide con el email"})
@@ -22,5 +24,11 @@ exports.login = async (req, res) => {
     } else{
         res.status(400).json({msg: "El email no pertenece a ninguna cuenta"})
     }
-
 }
+
+exports.modifyUser = async (req, res) => {
+    const idUser = parseInt(req.params.idUser)
+    const body = req.body.admin
+    await updateUser(idUser, body)
+    res.status(200).json({msg: "Usuario modificado a admin"})
+} 

@@ -1,8 +1,6 @@
 const paymentMethods = require('../models/paymentMethods');
 const { Order, OrderDetail } = require('../modelsdb/orders');
-const { checkIdProduct } = require('./products');
 const states = require('../constantes/states');
-const { Product } = require('../modelsdb/products');
 
 exports.getAllOrders = async () => {
     return await Order.findAll({
@@ -40,7 +38,7 @@ exports.createOrder = async (body, idUser, idPayment, details, totalPrice, addre
     const newOrderId = await newOrder.id
 
     const products = details.map(async element =>  {
-        const orderDetailsCreate = await OrderDetail.create(
+        await OrderDetail.create(
             {
                 amount: element.amount,
                 order_id: newOrderId,
@@ -59,22 +57,21 @@ exports.updateOrder = async (idOrder, address, totalPrice, idPayment, details) =
     }, {
         where: {
             id: idOrder
-        }       //SEGUIR MIRANDO EL TEMA DEL UPDATE
+        }
     })
 
-    const products = details.map(async element =>  {
-        let orderDetailsUpdate = await OrderDetail.update(
+    for await (product of details){
+        await OrderDetail.update(
             {
-                amount: element.amount,
-                product_id: element.product_id
+                amount: product.amount
             }, {
                 where: {
-                    product_id: element.product_id
+                    product_id: product.product_id,
+                    order_id: idOrder
                 }
-            }
-        )
-    })
-    return modifyOrder
+            })
+    }
+    return modifyOrder 
 }
 
 exports.checkIdOrder = async (id) => {
@@ -93,6 +90,33 @@ exports.checkIdOrder = async (id) => {
 exports.newOrderState = async (newState, idOrder) => {
     return await Order.update({
         state: newState
+    }, {
+        where: {
+            id: idOrder
+        }
+    })
+}
+
+exports.getOrderDetails = async (idOrder) => {
+    return await OrderDetail.findAll({
+        where: {
+            order_id: idOrder
+        }
+    })
+}
+
+exports.deleteOrderDetail = async (idOrder, idProduct) => {
+    return await OrderDetail.destroy({
+        where: {
+            order_id: idOrder,
+            product_id: idProduct
+        }
+    })
+}
+
+exports.modifytotalPrice = async (idOrder, total) => {
+    return await Order.update({
+        total: total
     }, {
         where: {
             id: idOrder
