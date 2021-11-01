@@ -45,3 +45,13 @@ exports.checkName = async (nameProduct) => {
         }
     })
 }
+
+exports.modifyPrice = async (idProduct, price) => {
+    return await Product.update({
+        price: price
+    }, {
+        where: {
+            id: idProduct
+        }
+    })
+}

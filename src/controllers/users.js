@@ -1,4 +1,4 @@
-const { createUser, checkEmail, updateUser } = require('../repositories/users')
+const { createUser, checkEmail, updateUser, updateUserDisabled } = require('../repositories/users')
 const JWT = require('jsonwebtoken')
 const { config } = require('../config')
 
@@ -32,3 +32,10 @@ exports.modifyUser = async (req, res) => {
     await updateUser(idUser, body)
     res.status(200).json({msg: "Usuario modificado a admin"})
 } 
+
+exports.userDisabled = async (req, res) => {
+    const idUser = parseInt(req.params.idUser)
+    const disabled = req.body.disabled
+    await updateUserDisabled(idUser, disabled)
+    res.status(200).json({msg: `Ususario modificado`})
+}

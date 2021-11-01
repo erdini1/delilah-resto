@@ -4,10 +4,10 @@ const { Model, DataTypes } = require('sequelize')
 class Order extends Model { }
 
 Order.init({
-    newAddress: {    //Modificar a newAddress
-        type: DataTypes.STRING,                     //en ingles
-        allowNull: false,
-    },
+    // newAddress: {    //Modificar a newAddress
+    //     type: DataTypes.STRING,                     //en ingles
+    //     allowNull: false,
+    // },
     total: {
         type: DataTypes.INTEGER,
         allowNull: true

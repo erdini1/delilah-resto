@@ -1,4 +1,5 @@
-const { checkEmail } = require('../repositories/users')
+const { token } = require('../functions/token')
+const { checkEmail, checkIdUser } = require('../repositories/users')
 
 async function validate_data_register(req, res, next){
     const { username, firstName, lastName, email, phone, address, password, passwordConf } = req.body
@@ -27,10 +28,28 @@ async function validate_data_login(req, res, next){
     }
 }
 
+async function verify_disabled(req, res, next){
+    // const idUser = req.params.idUser
+    let stringToken = req.headers.authorization
+    const decoded = token(stringToken)
+    try{
+        const findUser = await checkIdUser(decoded.id)
+        if(findUser.disabled === false){
+            next()
+        } else{
+            res.status(403).json({"mensaje":"Su usuario se encuentra deshabilitado"})
+        }
+    } catch(error){
+        res.status(400).json({msg: error})
+    }
+    
+}
+
 
 
 
 module.exports = {
     validate_data_register,
-    validate_data_login
+    validate_data_login,
+    verify_disabled
 }

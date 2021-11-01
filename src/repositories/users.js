@@ -39,3 +39,13 @@ exports.updateUser = async (idUser, admin) => {
         }
     })
 }
+
+exports.updateUserDisabled = async (user_id, disabled) => {
+    return await User.update({
+        disabled: disabled
+    }, {
+        where: {
+            id: user_id
+        }
+    })
+}

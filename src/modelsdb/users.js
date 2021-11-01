@@ -58,6 +58,7 @@ Order.hasMany(OrderDetail, {as: "OrderDetails", foreignKey: "order_id"})
 Product.hasMany(OrderDetail, {as: "OrderDetails", foreignKey: "product_id"})
 PaymentMethod.hasMany(Order, {as: "Orders", foreignKey: "payment_id"})
 User.hasMany(Address, {as: "Address", foreignKey: "user_id"})
+Address.hasMany(Order, {as: "Address", foreignKey: "address_id"})
 
 module.exports = { 
     User, 

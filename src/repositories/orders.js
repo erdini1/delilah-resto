@@ -28,7 +28,7 @@ exports.userOrders = async (idUser) => {
 exports.createOrder = async (body, idUser, idPayment, details, totalPrice, address) => {
     const newOrder = await Order.create(
         {
-            newAddress: address,
+            address_id: address,
             total: totalPrice,
             user_id: idUser,
             payment_id: idPayment,
@@ -51,7 +51,7 @@ exports.createOrder = async (body, idUser, idPayment, details, totalPrice, addre
 
 exports.updateOrder = async (idOrder, address, totalPrice, idPayment, details) => {
     const modifyOrder = await Order.update({
-        newAddress: address,
+        address_id: address,
         total: totalPrice,
         payment_id: idPayment,
     }, {
