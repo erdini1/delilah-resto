@@ -12,7 +12,7 @@ async function validate_data_register(req, res, next){
                 res.status(400).json({msg: "Las contraseñas no coinciden"})
             }
         } else{
-            res.status(400).json({msg: "El email ya se encuentra en uso"})
+            res.status(422).json({msg: "El email ya se encuentra en uso"})
         }
     }else{
         res.status(400).json({msg: "Tiene que ingresar todos los datos para poder registrarse"})

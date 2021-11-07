@@ -49,3 +49,11 @@ exports.updateUserDisabled = async (user_id, disabled) => {
         }
     })
 }
+
+exports.deleteUserByEmail = async (email) => {
+    return await User.destroy({
+        where: {
+            email: email
+        }
+    })
+}
