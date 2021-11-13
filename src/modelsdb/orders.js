@@ -4,34 +4,28 @@ const { Model, DataTypes } = require('sequelize')
 class Order extends Model { }
 
 Order.init({
-    // newAddress: {    //Modificar a newAddress
-    //     type: DataTypes.STRING,                     //en ingles
-    //     allowNull: false,
-    // },
     total: {
         type: DataTypes.INTEGER,
         allowNull: true
     },
     date: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,        //VER ESTO
+        defaultValue: DataTypes.NOW,
         allowNull: false
     },
     state: {
         type: DataTypes.STRING,
         allowNull: false
     }
-    // timestamps: false,
 }, {sequelize, modelName: 'Orders'})
 
 class OrderDetail extends Model { }
 
 OrderDetail.init({
     amount: {
-        type: DataTypes.INTEGER,            /* { through: 'User_Profiles' } */ //MIRAR ESTO, PUEDE SERVIR BASTYNATE
+        type: DataTypes.INTEGER,
         allowNull: false
     },
-    // timestamps: false,
 }, {sequelize, modelName: "OrderDetails"})
 
 

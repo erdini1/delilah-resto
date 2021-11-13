@@ -30,12 +30,3 @@ exports.userAddress = async (user_id) => {
         }
     })
 }
-
-// exports.checkUserAddress = async (user_id, address_id) => {
-//     return await Address.findOne({
-//         where: {
-//             user_id: user_id,
-//             address_id: address_id
-//         }
-//     })
-// }

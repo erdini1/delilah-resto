@@ -12,7 +12,7 @@ async function validate_data_orders(req, res, next) {
             if(product.product_id != undefined && product.amount != undefined){
                 const productFind = await checkIdProduct(product.product_id)
                 if(productFind){
-                    counter++       //hecho
+                    counter++
                 }
             }
         }
@@ -32,7 +32,7 @@ function modify_states(req, res, next){
         res.status(400).json({
             "mensaje":"Tiene que ingresar un estado valido",
             estados : states
-    })      //hecho
+    })
     } else{
         next()
     }
@@ -49,7 +49,7 @@ async function validate_id_order(req, res, next){
             res.status(400).json({"mensaje":"El id indicado no pertenece a un pedido"})
         } else{
             next()
-        }   //hecho
+        }
     }
 }
 

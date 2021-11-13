@@ -3,6 +3,7 @@ const router = express.Router()
 const middlesProducts = require('../middlewares/products')
 const middlesPayments = require('../middlewares/paymentMethods')
 const { paymentList, newPayment, modifyPayment, deletePayment } = require('../controllers/paymentMethods')
+
 //El admin puede ver el listado de metodos de pago
 router.get('/', middlesProducts.validate_started_session, middlesProducts.validate_admin, paymentList)
 

@@ -9,7 +9,7 @@ class User extends Model {}
 
 User.init({
     username: {
-        type: DataTypes.STRING,                                            //EN INGLES
+        type: DataTypes.STRING,
         allowNull: false
     },
     firstName: {
@@ -28,10 +28,6 @@ User.init({
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    // address: {
-    //     type: DataTypes.STRING,
-    //     allowNull: false
-    // },
     password: {
         type: DataTypes.STRING,
         allowNull: false
@@ -50,7 +46,6 @@ User.init({
         allowNull: false,
         defaultValue: false
     }
-    // timestamps: false
 }, {sequelize, modelName: 'Users'})
 
 User.hasMany(Order, {as: "Orders", foreignKey: "user_id"})

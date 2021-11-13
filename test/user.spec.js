@@ -3,7 +3,6 @@ const expect = chai.expect
 const request = require('supertest')
 const app = require('../index')
 const { deleteUser } = require('../src/functions/deleteUserTest')
-const { checkEmail } = require('../src/repositories/users')
 
 
 let emailUser 

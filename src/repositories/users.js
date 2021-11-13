@@ -2,15 +2,15 @@ const { Address } = require('../modelsdb/address')
 const { User, Op } = require('../modelsdb/users')
 const { createAddress } = require('./address')
 
-exports.createUser = async (user) => {
+exports.createUser = async (user, passwordHash) => {
     const newUser = await User.create({ 
         username: user.username,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
         phone: user.phone,
-        password: user.password,
-        passwordConf: user.passwordConf
+        password: passwordHash,
+        passwordConf: passwordHash
     })
 
     await createAddress(user.address, newUser.id)

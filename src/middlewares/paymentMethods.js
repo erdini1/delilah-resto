@@ -1,4 +1,3 @@
-const paymentMethods = require('../models/paymentMethods');
 const { checkMethodName, checkIdMethod } = require('../repositories/paymentMethods');
 
 async function validate_id_payment(req, res, next) {

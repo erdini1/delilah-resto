@@ -1,4 +1,3 @@
-const paymentMethods = require('../models/paymentMethods');
 const { Order, OrderDetail } = require('../modelsdb/orders');
 const states = require('../constantes/states');
 

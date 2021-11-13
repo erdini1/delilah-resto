@@ -1,20 +1,23 @@
 const { createUser, checkEmail, updateUser, updateUserDisabled } = require('../repositories/users')
 const JWT = require('jsonwebtoken')
 const { config } = require('../config')
+const sha256 = require('js-sha256')
 
 
 exports.register = async (req, res) => {
     const body = req.body
-    const newUser = await createUser(body)
+    const passwordHash = sha256(body.password)
+    const newUser = await createUser(body, passwordHash)
     res.status(201).json({"mensaje":`Usuario Creado con exito, su id es ${newUser.id}`})
 }
 
 exports.login = async (req, res) => {
     const {email, password} = req.body
+    const passwordHash = sha256(password)
     const user = await checkEmail(email)
     if(user){
         const token = JWT.sign({user}, config.server.signature)
-        if(user.password === password){
+        if(user.password === passwordHash){
             res.status(200).json({
                 msg: `Ingreso correctamente` , token: token
             })

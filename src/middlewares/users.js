@@ -29,7 +29,6 @@ async function validate_data_login(req, res, next){
 }
 
 async function verify_disabled(req, res, next){
-    // const idUser = req.params.idUser
     let stringToken = req.headers.authorization
     const decoded = token(stringToken)
     try{

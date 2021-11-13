@@ -1,4 +1,3 @@
-const { config } = require('../config')
 const { checkIdProduct, checkName } = require('../repositories/products')
 const {client} = require('../connection/redis')
 const { token } = require('../functions/token')
@@ -16,10 +15,6 @@ async function validate_started_session(req, res, next){
 }
 
 async function validate_admin (req, res, next){
-
-    /* let stringToken = req.headers.authorization
-    const token = stringToken.split(" ")[1]
-    const decoded = jwt.verify(token, config.server.signature) */
     let stringToken = req.headers.authorization
     const decoded = token(stringToken)
     if(decoded.admin === true){

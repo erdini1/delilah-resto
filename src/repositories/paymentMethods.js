@@ -1,4 +1,3 @@
-//const paymentMethods = require('../models/paymentMethods');
 const { PaymentMethod } = require('../modelsdb/paymentMethods');
 
 exports.getAllMethods = async () => {

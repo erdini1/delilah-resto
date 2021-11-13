@@ -24,8 +24,5 @@ router.put('/:idOrder/confirmation', middlesProducts.validate_started_session, v
 //El usuario puede eliminar productos de su orden mientras el estado sea "pendiente"
 router.delete('/:idOrder',middlesProducts.validate_started_session, verify_disabled, middlesOrders.validate_id_order, middlesOrders.modify_order,  deleteOrderProducts)
 
-// //El ususario puede agregar un producto a su orden mientras el estado se "pendiente"
-// router.post('/:idOrder',middlesProducts.validate_started_session, middlesOrders.validate_id_order, middlesOrders.modify_order,  postOrderProducts)
-
 module.exports = router
 
