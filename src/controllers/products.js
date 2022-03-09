@@ -4,6 +4,7 @@ const { getAll, createProduct, modifyProduct, deleteProduct, modifyPrice } = req
 exports.productList = async (req, res) =>{
     const cache = req.cache
     if(cache === null){
+        console.log(cache)
         const products = await getAll()
         client.set("products", JSON.stringify(products), 'EX', 60, (err, reply) => {
             if(err){
@@ -12,6 +13,7 @@ exports.productList = async (req, res) =>{
         })
         res.status(200).json({Products: products})
     } else {
+        console.log(cache)
         res.status(200).json({Products: cache})
     }
 }

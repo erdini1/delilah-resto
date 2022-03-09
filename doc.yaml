@@ -6,506 +6,467 @@ info:
 
 servers:
   - description: Mi servidor local
-    url: http://localhost:3000
+    url: http://localhost:3000  
 tags:
-  - name: usuarios
-    description: Gestion de usuarios
-  - name: productos
+  - name: users
+    description: Gestion de usuarios 
+  - name: products
     description: Gestion de productos
-  - name: pedidos 
+  - name: orders 
     description: Gestion de pedidos
-  - name: metodos de pago 
+  - name: paymentMethods 
     description: Gestion de metodos de pago
 
 paths:
-  /usuarios/registro:           #USUARIO REGISTRO
+
+#USER
+
+  /users:
     post:
       tags:
-        - usuarios
+        - users
       summary: Registra un nuevo usuario
       requestBody:
         content:
           application/json:
-            schema: 
-              $ref: '#/components/schemas/BodyUsuarioRegistro'
+            schema:
+              $ref: "#/components/schemas/userRegister"
         required: true
       responses:
         201:
-          $ref: '#/components/responses/usuarioCreado'
+          $ref: '#/components/responses/userCreated'
         400:
-          $ref: '#/components/responses/validacionRegistro'
+          $ref: '#/components/responses/userRegisterValidation1'
+        422:
+          $ref: '#/components/responses/userRegisterValidation2'
 
-  /usuarios/login:
-    post:                 #USUARIO LOGIN
+  /users/login:
+    post:
       tags:
-        - usuarios
+        - users
       summary: El usuario puede iniciar sesion
       requestBody:
         content:
           application/json:
             schema: 
-              $ref: '#/components/schemas/BodyUsuarioLogin'
+              $ref: '#/components/schemas/userLogin'
         required: true
       responses:
-        201:
-          $ref: '#/components/responses/UsuarioLogin'
-        400:
-          $ref: '#/components/responses/correoInvalido'
-        422:
-          $ref: '#/components/responses/contraseniaInvalida'
-
-
-
-  /productos:       
-    get:            #PRODUCTOS GET
-      tags:
-        - productos
-      summary: Muestra el listado de prodcutos
-      parameters:
-        - $ref: '#/components/parameters/idUsuario'
-      responses:
         200:
-          description: Listado de productos
-          content:
-            application/json:
-              schema:
-                type: array
-                items:                
-                  $ref: '#/components/schemas/listadoProductos'
-        
-        401:
-          $ref: '#/components/responses/idUsuarioNoPertence'
-        
-        403:
-          $ref: '#/components/responses/validacionAdmin'
-  
-    post:         #PRODUCTOS POST
+          $ref: '#/components/responses/userLogin'
+        400:
+          $ref: '#/components/responses/userLoginInvalidEmail'
+        422:
+          $ref: '#/components/responses/userLoginInvalidPassword'
+
+  /users/{idUser}:
+    put:      
+      security:
+      - bearerAuth: []
       tags:
-        - productos
-      summary: El admin puede agregar un nuevo producto
+        - users
+      summary: El usuario puede asignarse como admin
       parameters:
-        - $ref: '#/components/parameters/idUsuario'
+        - $ref: '#/components/parameters/idUser'
       requestBody:
         content:
           application/json:
             schema: 
-              $ref: '#/components/schemas/BodyProductoPost'
+              $ref: '#/components/schemas/updateUserRol'
+        required: true
+      responses:
+        200:
+          $ref: '#/components/responses/changeRolUser'
+        400:
+          $ref: '#/components/responses/invalidUserId'
+        401:
+          $ref: '#/components/responses/invalidToken'
+        403:
+          $ref: '#/components/responses/unauthorizedIdUser'
+
+  /users/{idUser}/address:
+    get:      
+      security:
+      - bearerAuth: []
+      tags:
+        - users
+      summary: El usuario puede listar sus direcciones
+      parameters:
+        - $ref: '#/components/parameters/idUser'
+      responses:
+        200:
+          $ref: '#/components/responses/addressList'
+        400:
+          $ref: '#/components/responses/invalidUserId'
+        401:
+          $ref: '#/components/responses/invalidToken'
+        403:
+          $ref: '#/components/responses/unauthorizedIdUser'
+    post:
+      security:
+      - bearerAuth: []
+      tags:
+        - users
+      summary: El usuario puede agregar una direccion
+      parameters:
+        - $ref: '#/components/parameters/idUser'
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/newAddress'
         required: true
       responses:
         201:
-          $ref: '#/components/responses/productoCreado'
-
+          $ref: '#/components/responses/newAddress'
         400:
-          description: No puede agregar productos repetidos
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  msg:
-                    type: string
-                    example: No puede agregar productos repetidos
-
+          $ref: '#/components/responses/addressValidation'
         401:
-          $ref: '#/components/responses/idUsuarioNoPertence'
-
+          $ref: '#/components/responses/invalidToken'
         403:
-          $ref: '#/components/responses/validacionAdmin'
+          $ref: '#/components/responses/unauthorizedIdUser'
 
-  /productos/{idProducto}:
-    put:                      #PRODUCTO PUT
+  /users/{idUser}/disabled:
+    put:
+      security:
+      - bearerAuth: []
       tags:
-        - productos
+        - users
+      summary: El admin puede deshabilitar un usuario
+      parameters:
+        - $ref: '#/components/parameters/idUser'
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/disabledUser'
+        required: true
+      responses:
+        200:
+          $ref: '#/components/responses/disabledUSer'
+        401:
+          $ref: '#/components/responses/invalidToken'
+        403:
+          $ref: '#/components/responses/adminValidation'
+
+#PRODUCTS
+
+  /products:
+    get:      
+      security:
+      - bearerAuth: []
+      tags:
+        - products
+      summary: El usuario puede listar los productos
+      responses:
+        200:
+          $ref: '#/components/responses/listProducts'
+        401:
+          $ref: '#/components/responses/invalidToken'
+    post:
+      security:
+      - bearerAuth: []
+      tags:
+        - products
+      summary: El admin puede crear productos
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/addProduct'
+        required: true
+      responses:
+        201:
+          $ref: '#/components/responses/productAdd'
+        400:
+          $ref: '#/components/responses/productAddValidation'
+        401:
+          $ref: '#/components/responses/invalidToken'
+        403:
+          $ref: '#/components/responses/adminValidation'
+
+  /products/{idProduct}:
+    put:
+      security:
+      - bearerAuth: []
+      tags:
+        - products
       summary: El admin puede modificar un producto
       parameters:
-        - $ref: '#/components/parameters/idUsuario'
-        - $ref: '#/components/parameters/idProducto'
+        - $ref: '#/components/parameters/idProduct'
       requestBody:
         content:
           application/json:
             schema: 
-              $ref: '#/components/schemas/BodyProductoPost'
+              $ref: '#/components/schemas/addProduct'
         required: true
       responses:
-
         200:
-          description: Producto modificado
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  msg:
-                    type: string
-                    example: Producto actualizado
-
+          $ref: '#/components/responses/productAdd'
         400:
-          description: No puede agregar productos repetidos
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  msg:
-                    type: string
-                    example: No puede agregar productos repetidos
-
+          $ref: '#/components/responses/productAddValidation'
         401:
-          $ref: '#/components/responses/idUsuarioNoPertence'
-
+          $ref: '#/components/responses/invalidToken'
         403:
-          $ref: '#/components/responses/validacionAdmin'
-        
-        404:
-          $ref: '#/components/responses/idProductoNoPertence'
-
-    delete:       #PRODUCTO DELETE
+          $ref: '#/components/responses/adminValidation'
+    delete:
+      security:
+      - bearerAuth: []
       tags:
-        - productos
+        - products
       summary: El admin puede eliminar un producto
       parameters:
-        - $ref: '#/components/parameters/idUsuario'
-        - $ref: '#/components/parameters/idProducto'
+        - $ref: '#/components/parameters/idProduct'
       responses:
         200:
-          description: Producto eliminado
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  msg:
-                    type: string
-                    example: Producto eliminado
-
+          $ref: '#/components/responses/productDelete'
         400:
-          $ref: '#/components/responses/idProductoNoPertence'
-        
+          $ref: '#/components/responses/invalidProductId'
         401:
-          $ref: '#/components/responses/idUsuarioNoPertence'
-
+          $ref: '#/components/responses/invalidToken'
         403:
-          $ref: '#/components/responses/validacionAdmin'
+          $ref: '#/components/responses/adminValidation'
 
-  /pedidos:
-    get:          #PEDIDOS GET
+  /products/{idProduct}/price:
+    put:
+      security:
+      - bearerAuth: []
       tags:
-        - pedidos
-      summary: Muestra el listado de pedidos que realizo el usuario
+        - products
+      summary: El admin puede modificar el precio de un producto
       parameters:
-        - $ref: '#/components/parameters/idUsuario'
-      responses:
-        200:
-          description: Listado de pedidos que realizo el usuario
-          content:
-            application/json:
-              schema:
-                type: array
-                items:                
-                  $ref: '#/components/schemas/listadoPedidos'
-        
-        401:
-          $ref: '#/components/responses/idUsuarioNoPertence'
-
-    post:               #PEDIDOS POST
-      tags:
-        - pedidos
-      summary: Agrega un nuevo pedido
-      parameters:
-        - $ref: '#/components/parameters/idUsuario'
+        - $ref: '#/components/parameters/idProduct'
       requestBody:
         content:
           application/json:
             schema: 
-              $ref: '#/components/schemas/BodyPedidoPost'
+              $ref: '#/components/schemas/modifyPriceProduct'
+        required: true
+      responses:
+        200:
+          $ref: '#/components/responses/productNewPrice'
+        400:
+          $ref: '#/components/responses/invalidProductId'
+        401:
+          $ref: '#/components/responses/invalidToken'
+        403:
+          $ref: '#/components/responses/adminValidation'
+
+#ORDERS
+
+  /orders:
+    get:
+      security:
+      - bearerAuth: []
+      tags:
+        - orders
+      summary: Muestra el listado de pedidos que realizo el usuario
+      responses:
+        200:
+          $ref: '#/components/responses/listOrders'
+        401:
+          $ref: '#/components/responses/invalidToken' 
+    post:
+      security:
+      - bearerAuth: []
+      tags:
+        - orders
+      summary: El usuario puede realizar un pedido
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/newOrder'
         required: true
       responses:
         201:
-          $ref: '#/components/responses/pedidoAgregado'
-
+          $ref: '#/components/responses/ordertAdd'
         400:
-          description: Tiene que ingresar un producto existente
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  msg:
-                    type: string
-                    example: Tiene que ingresar un producto existente e indicar la cantidad
-
+          $ref: '#/components/responses/invalidDataOrder'
         401:
-          $ref: '#/components/responses/idUsuarioNoPertence'
+          $ref: '#/components/responses/invalidToken'
 
-        404:  
-          $ref: '#/components/responses/metodoNoValido'
-
-  /pedidos/{idPedido}:
-    put:                      #PEDIDO PUT
-      tags:
-        - pedidos
-      summary: Modifica un pedido
-      parameters:
-        - $ref: '#/components/parameters/idUsuario'
-        - $ref: '#/components/parameters/idPedido'
-      requestBody:
-        content:
-          application/json:
-            schema: 
-              $ref: '#/components/schemas/BodyPedidoPost'
-        required: true
-      responses:
-
-        200:
-          description: Pedido modificado
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  msg:
-                    type: string
-                    example: Pedido actualizado
-
-        400:
-          description: Tiene que ingresar un producto existente
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  msg:
-                    type: string
-                    example: Tiene que ingresar un producto existente e indicar la cantidad
-
-        401:
-          $ref: '#/components/responses/idUsuarioNoPertence'
-
-        404:  
-          $ref: '#/components/responses/metodoNoValido'
-
-        422:
-          $ref: '#/components/responses/idPedidoNoPertence'
-
-  /pedidos/{idPedido}/confirmacion:     #PEDIDO/CONFIRMACION PUT
+  /orders/{idOrder}:
     put:
+      security:
+      - bearerAuth: []
       tags:
-        - pedidos
-      summary: Confirma un pedido
+        - orders
+      summary: El usuario puede modificar su pedido
       parameters:
-        - $ref: '#/components/parameters/idUsuario'
-        - $ref: '#/components/parameters/idPedido'
-      responses:
-        200:
-          description: Estado modificado a confirmado
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  msg:
-                    type: string
-                    example: Estado modificado a confirmado, ya no lo puede modificar
-
-        400:
-          $ref: '#/components/responses/pedidoNoModificable'
-
-        401:
-          $ref: '#/components/responses/idUsuarioNoPertence'
-
-        404:
-          $ref: '#/components/responses/idPedidoNoPertence'
-
-        422:
-          description: Un pedido ya confirmado no se puede modificar
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  msg:
-                    type: string
-                    example: Un pedido ya confirmado no se puede modificar
-
-  /pedidos/{idPedido}/estado:
-    put:                    #PEDIDO/ESTADO PUT 
-      tags:
-        - pedidos
-      summary: El admin puede modificar el estado de un pedido una vez que ya esta confirmado
-      parameters:
-        - $ref: '#/components/parameters/idUsuario'
-        - $ref: '#/components/parameters/idPedido'
+        - $ref: '#/components/parameters/idOrder'
       requestBody:
         content:
           application/json:
             schema: 
-              type: object
-              properties:
-                estado:
-                  type: string
-                  description: estado a modificar
+              $ref: '#/components/schemas/modifyOrder'
         required: true
       responses:
         200:
-          description: Estado modificado a {estado}
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  msg:
-                    type: string
-                    example: Estado modificado a enviado
-
+          $ref: '#/components/responses/modifyOrder'
         400:
-          description: No puede modificar un pedido que no esta cerrado
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  msg:
-                    type: string
-                    example: No puede modificar un pedido que no esta cerrado
-        
+          $ref: '#/components/responses/invalidDataOrder'
         401:
-          $ref: '#/components/responses/idUsuarioNoPertence'
-
-        403:
-          $ref: '#/components/responses/validacionAdmin'
-        
-        404:
-          $ref: '#/components/responses/idPedidoNoPertence'
-
+          $ref: '#/components/responses/invalidToken'
         422:
-          description: Tiene que ingresar un estado valido
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  msg:
-                    type: string
-                    example: Tiene que ingresar un estado valido
-      
-  /pagos:
-    get:          #METODOS DE PAGO GET
+          $ref: '#/components/responses/modifyOrderValidation'
+    delete:
+      security:
+      - bearerAuth: []
       tags:
-        - metodos de pago
-      summary: Muestra al admin un listado con los metodos de pago
+        - orders
+      summary: El ususario puede eliminar productos de su orden mientras el estado sea pendiente
       parameters:
-        - $ref: '#/components/parameters/idUsuario'
-      responses:
-        200:
-          description: Listado de metodos de pago
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/listadoDePagos'
-        
-        401:
-          $ref: '#/components/responses/idUsuarioNoPertence'
-
-        403:
-          $ref: '#/components/responses/validacionAdmin'
-
-    post:         #METODOS DE PAGO POST
-      tags:
-        - metodos de pago
-      summary: El admin puede agregar un nuevo metodo de pago
-      parameters:
-        - $ref: '#/components/parameters/idUsuario'
+        - $ref: '#/components/parameters/idOrder'
       requestBody:
         content:
           application/json:
             schema: 
-              $ref: '#/components/schemas/BodyMetodosPost'
+              $ref: '#/components/schemas/deleteProductOrder'
         required: true
       responses:
-
-        200: 
-          $ref: '#/components/responses/metodoAgregado'
-
+        200:
+          $ref: '#/components/responses/deleteProductOrder'
         400:
-          description: El metodo de pago ya existe
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  msg:
-                    type: string
-                    example: El metodo de pago ya existe
-
+          $ref: '#/components/responses/invalidIdOrder'
         401:
-          $ref: '#/components/responses/idUsuarioNoPertence'
-
-        403:
-          $ref: '#/components/responses/validacionAdmin'
-        
+          $ref: '#/components/responses/invalidToken'
         422:
-          description: No puede dejar el campo de metodo vacio
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  msg:
-                    type: string
-                    example: No puede dejar el campo de metodo vacio
+          $ref: '#/components/responses/modifyOrderValidation'
 
-  /pagos/{idPago}:      #METODOS DE PAGO PUT
-    put:            
+  /orders/{idOrder}/confirmation:
+    put:
+      security:
+      - bearerAuth: []
       tags:
-        - metodos de pago
+        - orders
+      summary: El usuario puede confirmar su pedido
+      parameters:
+        - $ref: '#/components/parameters/idOrder'
+      responses:
+        200:
+          $ref: '#/components/responses/modifyOrderConfirmation'
+        400:
+          $ref: '#/components/responses/modifyOrderValidation'
+        401:
+          $ref: '#/components/responses/invalidToken'
+        422:
+          $ref: '#/components/responses/invalidIdOrder'
+
+  /orders/{idOrder}/state:
+    put:
+      security:
+      - bearerAuth: []
+      tags:
+        - orders
+      summary: El admin puede modificar el estado de un pedido
+      parameters:
+        - $ref: '#/components/parameters/idOrder'
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/modifyOrderState'
+        required: true
+      responses:
+        200:
+          $ref: '#/components/responses/modifyOrderState'
+        400:
+          $ref: '#/components/responses/invalidState'
+        401:
+          $ref: '#/components/responses/invalidToken'
+        403:
+          $ref: '#/components/responses/adminValidation'
+        422:
+          $ref: '#/components/responses/invalidIdOrder'
+
+#PAYMENTS
+
+  /payments:
+    get:
+      security:
+      - bearerAuth: []
+      tags:
+        - paymentMethods
+      summary: El admin puede listar los metodos de pago
+      responses:
+        200:
+          $ref: '#/components/responses/listPayments'
+        401:
+          $ref: '#/components/responses/invalidToken'
+        403:
+          $ref: '#/components/responses/adminValidation'
+    post:
+      security:
+      - bearerAuth: []
+      tags:
+        - paymentMethods
+      summary: El admin puede agregar un metodo de pago
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/newPayment'
+        required: true
+      responses:
+        201:
+          $ref: '#/components/responses/newPayment'
+        400:
+          $ref: '#/components/responses/newPaymentError'
+        401:
+          $ref: '#/components/responses/invalidToken'
+        403:
+          $ref: '#/components/responses/adminValidation'
+
+  /payments/{idPayment}:
+    put:
+      security:
+      - bearerAuth: []
+      tags:
+        - paymentMethods
       summary: El admin puede modificar un metodo de pago
       parameters:
-        - $ref: '#/components/parameters/idUsuario'
-        - $ref: '#/components/parameters/idPago'
+        - $ref: '#/components/parameters/idPayment'
       requestBody:
         content:
           application/json:
             schema: 
-              $ref: '#/components/schemas/BodyMetodosPost'
+              $ref: '#/components/schemas/newPayment'
         required: true
       responses:
-        
-        200: 
-          $ref: '#/components/responses/metodoModificado'
-
+        200:
+          $ref: '#/components/responses/modifyPayment'
         400:
-          $ref: '#/components/responses/idMetodoNoPertence'
-
+          $ref: '#/components/responses/newPaymentError'
         401:
-          $ref: '#/components/responses/idUsuarioNoPertence'
-
+          $ref: '#/components/responses/invalidToken'
         403:
-          $ref: '#/components/responses/validacionAdmin'
-
-    delete:       #METODOS DE PAGO DELETE
+          $ref: '#/components/responses/adminValidation'
+    delete:
+      security:
+      - bearerAuth: []
       tags:
-        - metodos de pago
+        - paymentMethods
       summary: El admin puede eliminar un metodo de pago
       parameters:
-        - $ref: '#/components/parameters/idUsuario'
-        - $ref: '#/components/parameters/idPago'
+        - $ref: '#/components/parameters/idPayment'
       responses:
         200:
-          $ref: '#/components/responses/metodoEliminado'
-
+          $ref: '#/components/responses/deletePayment'
         400:
-          $ref: '#/components/responses/idMetodoNoPertence'
-        
+          $ref: '#/components/responses/newPaymentError'
         401:
-          $ref: '#/components/responses/idUsuarioNoPertence'
-
+          $ref: '#/components/responses/invalidToken'
         403:
-          $ref: '#/components/responses/validacionAdmin'
+          $ref: '#/components/responses/adminValidation'
 
 components:
+
   responses:
 
-    usuarioCreado:
+  #USER
+
+    userCreated:
       description: Usuario creado con exito
       content:
         application/json:
@@ -514,9 +475,9 @@ components:
             properties:
               msg:
                 type: string
-                example: Usuario Creado con exito, su id es 1
-
-    validacionRegistro:
+                example: Usuario creado con exito, su id es 1
+    
+    userRegisterValidation1:
       description: Tiene que ingresar datos en todos los campos
       content:
         application/json:
@@ -525,9 +486,20 @@ components:
             properties:
               msg:
                 type: string
-                example: Para poder registrarse necesita usuario, nombre y apellido, email, telefono, direccion de envio, contraseña y la confirmacion de la contraseña
+                example: Tiene que ingresar todos los datos para poder registrarse
 
-    UsuarioLogin:
+    userRegisterValidation2:
+      description: El email ya esta en uso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+                example: El email ya se encuentra en uso
+
+    userLogin:
       description: Ingreso correctamente
       content:
         application/json:
@@ -537,9 +509,12 @@ components:
               msg:
                 type: string
                 example: Ingreso correctamente
+              token:
+                type: string
+                example: token
 
-    correoInvalido: 
-      description: El usuario no existe
+    userLoginInvalidEmail: 
+      description: Email no existente
       content:
         application/json:
           schema:
@@ -547,9 +522,9 @@ components:
             properties:
               msg:
                 type: string
-                example: El usuario o correo ingresado no existe
+                example: El email no pertenece a ninguna cuenta
 
-    contraseniaInvalida:
+    userLoginInvalidPassword:
       description: La contraseña no coincide con el usuario
       content:
         application/json:
@@ -558,10 +533,10 @@ components:
             properties:
               msg:
                 type: string
-                example: La contraseña no coincide con el usuario
-    
-    productoCreado:
-      description:  Producto creado
+                example: La contraseña no coincide con el email
+
+    changeRolUser:
+      description: Usuario modificado a admin
       content:
         application/json:
           schema:
@@ -569,10 +544,10 @@ components:
             properties:
               msg:
                 type: string
-                example: Producto creado
+                example: Usuario modificado a admin
 
-    validacionAdmin: 
-      description: Solo el admin puede realizar esa accion
+    verifyUserDisabled: 
+      description: Su usuario se encuentra deshabilitado
       content:
         application/json:
           schema:
@@ -580,9 +555,9 @@ components:
             properties:
               msg:
                 type: string
-                example: Solo el admin puede realizar esa accion
+                example: Su usuario se encuentra deshabilitado
 
-    idUsuarioNoPertence:
+    invalidUserId:
       description: El id no pertenece a un usuario
       content:
         application/json:
@@ -591,9 +566,120 @@ components:
             properties:
               msg:
                 type: string
-                example: El id_usuario no pertenece a un usuario
+                example: El id del usuario no pertenece a un usuario
 
-    idProductoNoPertence:
+    unauthorizedIdUser:
+      description: El id no pertenece a su usuario
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+                example: No puede puede modificar otro usuario que no sea el suyo
+
+    addressList:
+      description: Listado de las direcciones del usuario
+      content:
+        application/json:
+          schema:
+            type: array
+            items:                
+              $ref: '#/components/schemas/addressList'
+
+    newAddress:
+      description: Direccion agregada con exito
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+                example: Direccion agregada con exito
+
+    addressValidation:
+      description: No ingreso ninguna direccion
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+                example: Tiene que ingresar una direccion
+
+    disabledUSer:
+      description: Puede deshabilitar o habilitar un usuario
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+                example: Ususario modificado
+
+    adminValidation:
+      description: Solo el admin puede realizar esa accion
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+                example: Solo el administrador puede realizar esa accion
+
+    invalidToken:
+      description: El token ingresado es invalido
+      content:
+        application/json:
+          schema:
+            type: object
+          examples:
+            Token invalido:
+              value:
+                msg: Token invalido
+            Usuario deshabilitado:
+              value:
+                msg: El usuario se encuentra deshabilitado
+
+  #PRODUCTS
+
+    listProducts:
+      description: Listado de productos
+      content:
+        application/json:
+          schema:
+            type: array
+            items:                
+              $ref: '#/components/schemas/listProducts'
+
+    productAdd:
+      description:  Producto agregago
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+                example: Producto agregado
+
+    productAddValidation:
+      description: No puede agregar productos repetidos
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+                example: No puede agregar productos repetidos
+
+    invalidProductId:
       description: El id no pertenece a un producto
       content:
         application/json:
@@ -602,10 +688,10 @@ components:
             properties:
               msg:
                 type: string
-                example: El idProducto no pertenece a un producto
+                example: El id indicado no pertenece a un producto
 
-    idPedidoNoPertence:
-      description: El id no pertenece a un pedido
+    productDelete:
+      description:  Producto eliminado
       content:
         application/json:
           schema:
@@ -613,10 +699,10 @@ components:
             properties:
               msg:
                 type: string
-                example: El idPedido no pertenece a un pedido
+                example: Producto eliminado
 
-    pedidoAgregado:
-      description: Predido agregado
+    productNewPrice:
+      description:  Producto modificado
       content:
         application/json:
           schema:
@@ -624,10 +710,21 @@ components:
             properties:
               msg:
                 type: string
-                example: Pedido agregado con exito
+                example: Precio del producto actualizado
 
-    metodoNoValido:
-      description: Metodo de pago no valido
+  #ORDERS
+
+    listOrders:
+      description: Listado de pedidos que realizo el usuario
+      content:
+        application/json:
+          schema:
+            type: array
+            items:                
+              $ref: '#/components/schemas/listOrders'
+
+    ordertAdd:
+      description: Pedido agregado
       content:
         application/json:
           schema:
@@ -635,10 +732,30 @@ components:
             properties:
               msg:
                 type: string
-                example: No ingreso un metodo de pago valido
+                example: Pedido agregado
 
-    pedidoNoModificable:
-      description: No puede modificar un pedido que no sea suyo
+    invalidDataOrder:
+      description: informacion invalida
+      content:
+        application/json:
+          schema:
+            type: object
+          examples:
+            Direccion no seleccionada:
+              value:
+                msg: Tiene que seleccionar una direccion
+            Direccion invalida:
+              value: 
+                msg: Tiene que ingresar el id de una direccion correspondiente a su usuario
+            Metodo de pago no seleccionado:
+              value:
+                msg: No ingreso un metodo de pago valido
+            Detalle no indicado:
+              value:
+                msg: Tiene que ingresar el detalle de la compra
+
+    modifyOrder:
+      description: Pedido actualizado
       content:
         application/json:
           schema:
@@ -646,10 +763,24 @@ components:
             properties:
               msg:
                 type: string
-                example: No puede modificar un pedido que no sea suyo
+                example: Pedido actualizado
 
-    idMetodoNoPertence:
-      description: El id no pertenece a un metodo de pago
+    modifyOrderValidation:
+      description: No se puede modificar el pedido
+      content:
+        application/json:
+          schema:
+            type: object
+          examples:
+            Pedido invalido:
+              value:
+                msg: No puede modificar un pedido que no sea suyo
+            Pedido ya confirmado:
+              value: 
+                msg: El pedido ya no se puede modificar
+
+    modifyOrderConfirmation:
+      description: Estado modificado a confirmado, ya no lo puede modificar
       content:
         application/json:
           schema:
@@ -657,9 +788,74 @@ components:
             properties:
               msg:
                 type: string
-                example: El idPago no pertenece a un metodo de pago
+                example: Estado modificado a confirmado, ya no lo puede modificar
 
-    metodoAgregado:
+    invalidIdOrder:
+      description: El pedido ya no se puede modificar
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+                example: El id indicado no pertenece a un pedido
+
+    modifyOrderState:
+      description: Estado modificado a {state}
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+                msg:
+                  type: string
+                  example: Estado modificado a {state}
+
+    invalidState:
+      description: Tiene que ingresar un estado valido
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+                msg:
+                  type: string
+                  example: Tiene que ingresar un estado valido
+
+    deleteProductOrder:
+      description:  Producto eliminado de la orden
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+                example: Producto eliminado de la orden
+
+  #PAYMENT
+
+    listPayments:
+      description: Listado de metodos de pago
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              Metodos de pago:
+                type: array
+                items:
+                  properties:
+                    id: 
+                      type: integer
+                      format: int 32
+                      description: id del metodo de pago
+                    method: 
+                      type: string
+                      description: nombre del metodo de pago
+
+    newPayment:
       description: Metodo de pago agregado
       content:
         application/json:
@@ -669,9 +865,26 @@ components:
               msg:
                 type: string
                 example: Metodo de pago agregado
-      
-    metodoModificado:
-      description: Metodo de pago modificado a {metodo}
+
+    newPaymentError:
+      description: Tiene que ingresar el metodo a agregar
+      content:
+        application/json:
+          schema:
+            type: object
+          examples:
+            Metodo no ingresado:
+              value: 
+                msg: Tiene que ingresar el metodo a agregar
+            Metodo repetido:
+              value: 
+                msg: El metodo ingresado ya se encuentra registrado
+            Id no encontrado:
+              value:
+                msg: El id indicado no pertencea a un metodo de pago
+
+    modifyPayment:
+      description: Metodo de pago modificado
       content:
         application/json:
           schema:
@@ -679,9 +892,9 @@ components:
             properties:
               msg:
                 type: string
-                example: Metodo de pago modificado a credito
-      
-    metodoEliminado:
+                example: Metodo de pago modificado a efectivo
+
+    deletePayment:
       description: Metodo de pago eliminado
       content:
         application/json:
@@ -691,185 +904,293 @@ components:
               msg:
                 type: string
                 example: Metodo de pago eliminado
-    
-          
+
+
+
   parameters:
-    idUsuario:
-      name: id_usuario
-      in: header
-      description: id del usuario
-      required: true
-      schema:
+
+  #USER
+
+    idUser:
+        name: idUser
+        in: path
+        description: id del usuario
+        required: true
+        schema:
+            type: integer
+
+  #PRODUCTS
+
+    idProduct:
+        name: idProduct
+        in: path
+        description: id del producto
+        required: true
+        schema:
+            type: integer
+
+  #ORDERS
+
+    idOrder:
+        name: idOrder
+        in: path
+        description: id del pedido
+        required: true
+        schema:
           type: integer
 
-    idProducto:
-      name: idProducto
+  #PAYMENTS
+
+    idPayment:
+      name: idPayment
       in: path
-      description: id del producto
+      description: id de metodo de pago
       required: true
       schema:
-          type: integer
-
-    idPedido:
-      name: idPedido
-      in: path
-      description: id del pedido
-      required: true
-      schema:
-          type: integer
-
-    idPago:
-      name: idPago
-      in: path
-      description: id del metodo de pago
-      required: true
-      schema:
-          type: integer
-
+        type: integer
 
   schemas:
-    BodyUsuarioRegistro:
+
+  #USER
+
+    userRegister:
       type: object
       properties:
-        usuario:
+        username:
           type: string
-          description: nombre de usuario
-        nombre y apellido:
+          description: usuario
+        fisrtName:
           type: string
-          description: nombre y apellido del usuario
+          description: nombre del usuario
+        lastName:
+          type: string
+          description: apellido del usuario
         email:
           type: string
           description: email del usuario
-        telefono:
+        phone:
           type: integer
           format: int 32
           description: telefono del usuario
-        direccionEnvio:
+        address:
           type: string
           description: direccion del usuario
-        contrasenia:
+        password:
           type: string
           description: contraseña del usuario
-        confContrasenia:
+        passwordConf:
           type: string
           description: confirmacion de contraseña del usuario
 
-    BodyUsuarioLogin:
+    userLogin:
       type: object
       properties:
-        usuario_email:
+        email:
           type: string
-          description: nombre de usuario o email
-        contrasenia:
+          description: email del usuario
+        password:
           type: string
           description: contraseña del usuario
 
-    BodyProductoPost:
+    updateUserRol:
       type: object
-      properties:
-        nombre:
-          type: string
-          description: nombre del producto
-        precio:
-          type: integer
-          format: int 32
-          description: precio del producto
+      properties: 
+        admin: 
+          type: boolean
+          description: rol del usuario
 
-    listadoProductos:
+    addressList:
       type: object
       properties:
-        nombre:
-          type: string
-          description: nombre del producto
-        precio:
+        id:
           type: integer
           format: int 32
-          description: precio del producto
+          description: id de de la direccion
+        address:
+          type: string
+          description: direccion
+        user_id:
+          type: integer
+          format: int 32
+          description: id del usuario
+
+    newAddress:
+      type: object
+      properties: 
+        address: 
+          type: string
+          description: nueva direccion
+
+    disabledUser:
+      type: object
+      properties: 
+        disabled: 
+          type: boolean
+          description: deshabilitar un usuario
+
+  #PRODUCTS
+
+    listProducts:
+      type: object
+      properties:
         id:
           type: integer
           format: int 32
           description: id del producto
-
-    BodyPedidoPost:
-      type: object
-      properties:
-        detalle:
-          type: array
-          items:
-            properties:
-              idProducto: 
-                type: integer
-                format: int 32
-                description: id del producto
-              cantidad:
-                type: integer
-                format: int 32
-                description: cantidad del producto a comprar
-        direccion:
+        name:
           type: string
-          description: (opcional) direccion de pago
-        pago:
-          type: string
-          description: metodo de pago
-    
-    listadoPedidos:
-      type: object
-      properties:
-        detalle:
-          type: array
-          items:
-            properties:
-              idProducto: 
-                type: integer
-                format: int 32
-                description: id del producto
-              cantidad:
-                type: integer
-                format: int 32
-                description: cantidad del producto a comprar
-        direccion:
-          type: string
-          description: (opcional) direccion de pago
-        pago:
-          type: string
-          description: metodo de pago
-        total: 
+          description: nombre del producto
+        price:
           type: integer
           format: int 32
-          description: precio total de todos los productos con sus cantidades
-        estado:
+          description: precio del producto
+
+    addProduct:
+      type: object
+      properties:
+        name:
+          type: string
+          description: nombre del producto
+        price:
+          type: integer
+          description: precio del producto
+
+    modifyPriceProduct:
+      type: object
+      properties:
+        price:
+          type: integer
+          description: precio del producto
+
+  #ORDERS
+
+    listOrders:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: id del pedido
+        total:
+          type: integer
+          format: int 32
+          description: total del pedido
+        date:
+          type: string
+          description: dia y hora en que se realizo el pedido
+        state:
           type: string
           description: estado del pedido
-        hora:
-          type: string
-          description: hora en que se realizo el pedido
-        idPedido:
+        user_id:
           type: integer
           format: int 32
-          description: id del pedido
-        idUsuario:
+          description: id del usuario
+        payment_id:
           type: integer
           format: int 32
-          description: id del usuario 
-
-    listadoDePagos:
-      type: object
-      properties:
-        Metodos de pago:
+          description: id del metodo de pago
+        address_id:
+          type: integer
+          format: int 32
+          description: id de la direccion
+        OrdersDetails:
           type: array
           items:
             properties:
-              metodo: 
-                type: string
-                description: metodo de pago
-              id:
+              amount: 
+                type: integer
+                format: int 32
+                description: cantidad del producto a comprar
+              product_id:
+                type: integer
+                format: int 32
+                description: id del producto
+
+    newOrder:
+      type: object
+      properties:
+        address_id:
+          type: integer
+          format: int 32
+          description: id de la direccion
+        payment:
+          type: string
+          description: nombre del metodo de pago
+        details:
+          type: array
+          items:
+            properties:
+              amount: 
+                type: integer
+                format: int 32
+                description: cantidad del producto a comprar
+              product_id:
+                type: integer
+                format: int 32
+                description: id del producto
+
+    modifyOrder:
+      type: object
+      properties:
+        details:
+          type: array
+          items:
+            properties:
+              amount: 
+                type: integer
+                format: int 32
+                description: cantidad del producto a comprar
+              product_id:
+                type: integer
+                format: int 32
+                description: id del producto
+        address_id:
+          type: integer
+          format: int 32
+          description: id de la direccion
+        payment:
+          type: string
+          description: nombre del metodo de pago
+
+    modifyOrderState:
+      type: object
+      properties:
+        state:
+          type: string
+          description: estado del pedido
+
+    deleteProductOrder:
+      type: object
+      properties:
+        product_id:
+          type: integer
+          description: id del producto a eliminar de la orden
+
+  #PAYMENTS
+
+    listPayments:
+      type: object
+      properties:
+        Metodos de pago: 
+          type: array
+          items:
+            properties:
+              id: 
                 type: integer
                 format: int 32
                 description: id del metodo de pago
+              method: 
+                type: string
+                description: nombre del metodo de pago
 
-    BodyMetodosPost:
+    newPayment:
       type: object
       properties:
-        metodo: 
+        method:
           type: string
-          description: metodo de pago
+          description: Nombre del metodo de pago a agregar
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

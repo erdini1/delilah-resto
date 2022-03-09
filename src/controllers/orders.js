@@ -1,6 +1,6 @@
 const states = require('../constantes/states')
 const { totalPrice } = require('../functions/totalPrice')
-const { checkIdAddress } = require('../repositories/address')
+const { checkIdAddress, userAddress } = require('../repositories/address')
 const { getAllOrders, userOrders, createOrder, checkIdOrder, updateOrder, newOrderState, deleteOrderDetail, getOrderDetails, modifytotalPrice } = require('../repositories/orders')
 const { checkMethodName } = require('../repositories/paymentMethods')
 
@@ -21,10 +21,9 @@ exports.newOrder = async (req, res) => {
     const user_id = req.user.id
     const method = await checkMethodName(body.payment)
     const total = await totalPrice(body.details)
-    let address = req.address.id
-    if(address == null){ 
-        address = await UserAddress(user_id)
-    }
+    
+    let addressId = req.address.id
+    let address = await userAddress(user_id, addressId)
     await createOrder(body, user_id, method.id, body.details, total, address.id)
     res.status(201).json({"mensaje":`Pedido agregado`})
 

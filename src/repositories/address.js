@@ -23,10 +23,11 @@ exports.checkIdAddress = async (id) => {
     })
 }
 
-exports.userAddress = async (user_id) => {
+exports.userAddress = async (user_id, addressId) => {
     return await Address.findOne({
         where: {
-            user_id: user_id
+            user_id: user_id,
+            id: addressId
         }
     })
 }

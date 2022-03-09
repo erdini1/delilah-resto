@@ -2,7 +2,7 @@ const states = require('../constantes/states')
 const { checkIdProduct } = require('../repositories/products')
 const { checkIdOrder } = require('../repositories/orders')
 const { token } = require('../functions/token')
-const { checkIdAddress } = require('../repositories/address')
+const { checkIdAddress, userAddress } = require('../repositories/address')
 
 async function validate_data_orders(req, res, next) {
     const { details } = req.body
@@ -81,9 +81,22 @@ async function addAddress(req, res, next){
             res.status(400).json({msg: "La direccion ingresada no se encuentra registrada"})
         }
     } else {
-        res.status(400).json({msg: "Tiene que seleccioar una direccion"})
+        res.status(400).json({msg: "Tiene que seleccionar una direccion"})
     }
     
+}
+
+async function validate_id_address(req, res, next){
+    let stringToken = req.headers.authorization
+    const decoded = token(stringToken)
+
+    const idAddress = req.body.address_id
+    let address = await userAddress(decoded.id, idAddress)
+    if(address != undefined){
+        next()
+    } else {
+        res.status(400).json({msg: "Tiene que ingresar el id de una direccion correspondiente a su usuario"})
+    }
 }
 
 module.exports = {
@@ -91,5 +104,6 @@ module.exports = {
     validate_id_order,
     modify_states,
     modify_order,
-    addAddress
+    addAddress,
+    validate_id_address
 }

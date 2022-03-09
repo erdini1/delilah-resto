@@ -8,9 +8,9 @@ app.use(cors())
 app.use(express.json())
 app.use(helmet())
 
-// ;(async() => {
-//     await sequelize.sync()
-// })();
+ ;(async() => {
+     await sequelize.sync()
+ })();
 
 const users = require('./src/routes/users')
 app.use('/users', users)
