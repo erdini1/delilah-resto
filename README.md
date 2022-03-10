@@ -16,7 +16,7 @@ Proyecto del segundo Sprint del curso de Desarrollo Web Back End de Acamica
 - Jsonwebtoken - v8.5.1
 - Mariadb - v2.5.4
 - Mocha - v9.1.3
-- Moment - v2.29.1
+- Moment - v2.29.1 
 - Nodemon - v2.0.12
 - Redis - v3.1.2
 - Sequelize - v6.6.5
